@@ -1,0 +1,970 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Settings | The Legal Choice Portal</title>
+
+<link rel="stylesheet" href="portal.css">
+
+<style>
+.notice {
+    display:none;
+    padding:12px 15px;
+    border-radius:10px;
+    margin-bottom:16px;
+    font-size:14px;
+}
+
+.notice.success {
+    background:#e8f7ee;
+    color:#176b3a;
+}
+
+.notice.error {
+    background:#fdecec;
+    color:#a12626;
+}
+
+.loading {
+    opacity:.65;
+    pointer-events:none;
+}
+
+.password-box {
+    margin-top:16px;
+    padding:18px;
+    border:1px solid #eee;
+    border-radius:12px;
+    background:#fafafa;
+}
+
+.password-box h3 {
+    margin-top:0;
+}
+
+.small-note {
+    font-size:13px;
+    margin-top:7px;
+}
+</style>
+</head>
+
+<body onload="initSettings()">
+
+<div class="portal">
+
+<aside class="side">
+
+<a class="portal-brand" href="dashboard.html">
+<img src="assets/logo.png" alt="Logo">
+
+<div>
+<strong>The Legal Choice</strong>
+<small>JUSTICE · TRUST · SUPPORT</small>
+</div>
+</a>
+
+<div class="user-mini">
+
+<img
+class="avatar"
+id="sideAvatar"
+src="assets/profile.jpg"
+alt="Lawyer">
+
+<div>
+<strong id="sideName">Adv. Safi ur Rehman</strong>
+<span>● Online · Lawyer</span>
+</div>
+
+</div>
+
+<div class="navtitle">Main Menu</div>
+
+<a href="dashboard.html">
+<i class="ico">▣</i>
+<span>Dashboard</span>
+</a>
+
+<a href="cases.html">
+<i class="ico">▤</i>
+<span>My Cases</span>
+</a>
+
+<a href="clients.html">
+<i class="ico">♙</i>
+<span>Clients</span>
+</a>
+
+<a href="appointments.html">
+<i class="ico">◫</i>
+<span>Appointments</span>
+</a>
+
+<a href="messages.html">
+<i class="ico">✉</i>
+<span>Messages</span>
+</a>
+
+<a href="documents.html">
+<i class="ico">▧</i>
+<span>Documents</span>
+</a>
+
+<a href="profile.html">
+<i class="ico">◉</i>
+<span>Profile</span>
+</a>
+
+<a class="active" href="settings.html">
+<i class="ico">⚙</i>
+<span>Settings</span>
+</a>
+
+<div class="navtitle">Account</div>
+
+<a href="index.html">
+<i class="ico">⌂</i>
+<span>Public Website</span>
+</a>
+
+<a href="#" onclick="portalLogout();return false">
+<i class="ico">↪</i>
+<span>Logout</span>
+</a>
+
+</aside>
+
+
+<main class="main">
+
+<header class="topbar">
+
+<div class="search">
+⌕
+<input placeholder="Search cases, clients, appointments...">
+</div>
+
+<div class="top-actions">
+
+<span class="bell">
+♧<b>3</b>
+</span>
+
+<a class="top-user" href="profile.html">
+
+<img
+id="topAvatar"
+src="assets/profile.jpg"
+alt="Lawyer">
+
+<div>
+
+<strong id="topName">Adv. Safi ur Rehman</strong>
+<br>
+
+<span class="muted">Lawyer</span>
+
+</div>
+
+</a>
+
+</div>
+
+</header>
+
+
+<div class="content">
+
+<div class="heading">
+
+<div>
+
+<h1>Settings</h1>
+
+<p class="muted">
+Manage your portal account and security preferences.
+</p>
+
+</div>
+
+<button
+id="saveTopBtn"
+class="btn gold"
+onclick="saveSettings()">
+
+Save Changes
+
+</button>
+
+</div>
+
+
+<div id="successMessage" class="notice success"></div>
+
+<div id="errorMessage" class="notice error"></div>
+
+
+<!-- ACCOUNT SETTINGS -->
+
+<section class="panel">
+
+<div class="panelhead">
+<h2>Account Settings</h2>
+</div>
+
+<div class="panelbody">
+
+<div class="formgrid">
+
+<div class="field">
+
+<label>Full Name</label>
+
+<input
+id="fullName"
+type="text"
+placeholder="Adv. Safi ur Rehman">
+
+</div>
+
+
+<div class="field">
+
+<label>Email</label>
+
+<input
+id="email"
+type="email"
+placeholder="Email address">
+
+</div>
+
+
+<div class="field">
+
+<label>Phone</label>
+
+<input
+id="phone"
+type="text"
+placeholder="+92 315 5729250">
+
+</div>
+
+
+<div class="field">
+
+<label>City</label>
+
+<input
+id="city"
+type="text"
+placeholder="City">
+
+</div>
+
+
+<div class="field">
+
+<label>Specialization</label>
+
+<input
+id="specialization"
+type="text"
+placeholder="Civil, Criminal, Family Law etc.">
+
+</div>
+
+
+<div class="field">
+
+<label>Timezone</label>
+
+<select id="timezone">
+
+<option value="Asia/Karachi">
+Pakistan Standard Time (PKT)
+</option>
+
+</select>
+
+</div>
+
+
+<div class="field full">
+
+<label>Professional Bio</label>
+
+<textarea
+id="bio"
+rows="5"
+placeholder="Write your professional biography..."></textarea>
+
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+
+<!-- SECURITY -->
+
+<section class="panel" style="margin-top:16px">
+
+<div class="panelhead">
+
+<h2>Security</h2>
+
+</div>
+
+<div class="panelbody">
+
+<div class="password-box">
+
+<h3>Change Password</h3>
+
+<p class="muted">
+Create a new password for your portal account.
+</p>
+
+
+<div class="formgrid">
+
+<div class="field">
+
+<label>New Password</label>
+
+<input
+id="newPassword"
+type="password"
+placeholder="Minimum 6 characters">
+
+</div>
+
+
+<div class="field">
+
+<label>Confirm New Password</label>
+
+<input
+id="confirmPassword"
+type="password"
+placeholder="Repeat new password">
+
+</div>
+
+</div>
+
+
+<br>
+
+<button
+class="btn light"
+onclick="changePassword()">
+
+Change Password
+
+</button>
+
+<p class="muted small-note">
+After changing your password, use the new password on your next login.
+</p>
+
+</div>
+
+</div>
+
+</section>
+
+
+<!-- ACCOUNT INFORMATION -->
+
+<section class="panel" style="margin-top:16px">
+
+<div class="panelhead">
+
+<h2>Account Information</h2>
+
+</div>
+
+<div class="panelbody">
+
+<p class="muted">
+Your account is protected by Supabase Authentication.
+</p>
+
+<p>
+<strong>Account Role:</strong>
+<span id="accountRole">Admin</span>
+</p>
+
+<p>
+<strong>Login Email:</strong>
+<span id="loginEmail">Loading...</span>
+</p>
+
+</div>
+
+</section>
+
+
+<div style="margin-top:20px">
+
+<button
+class="btn gold"
+onclick="saveSettings()">
+
+Save Changes
+
+</button>
+
+</div>
+
+
+</div>
+
+</main>
+
+</div>
+
+
+<div class="mobilebar">
+
+<a class="btn" href="dashboard.html">
+Dashboard
+</a>
+
+<a
+class="btn gold"
+href="#"
+onclick="portalLogout();return false">
+
+Logout
+
+</a>
+
+</div>
+
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script src="portal.js"></script>
+
+
+<script>
+
+let currentUser = null;
+
+
+/* =========================
+   INITIALIZE SETTINGS
+========================= */
+
+async function initSettings() {
+
+    try {
+
+        const {
+            data,
+            error
+        } = await supabaseClient.auth.getSession();
+
+
+        if (
+            error ||
+            !data.session ||
+            !data.session.user
+        ) {
+
+            window.location.href = "portal-login.html";
+            return;
+
+        }
+
+
+        currentUser = data.session.user;
+
+
+        await loadSettings();
+
+    } catch (error) {
+
+        console.error(error);
+
+        showError(
+            "Unable to load account settings."
+        );
+
+    }
+
+}
+
+
+/* =========================
+   LOAD PROFILE
+========================= */
+
+async function loadSettings() {
+
+    try {
+
+        const {
+            data: profile,
+            error
+        } = await supabaseClient
+
+            .from("Profile")
+
+            .select(`
+                id,
+                full_name,
+                email,
+                role,
+                phone,
+                city,
+                specialization,
+                experience,
+                profile_image,
+                bio
+            `)
+
+            .eq("id", currentUser.id)
+
+            .maybeSingle();
+
+
+        if (error) {
+
+            console.error(error);
+
+            showError(
+                "Could not load your profile information."
+            );
+
+            return;
+
+        }
+
+
+        if (!profile) {
+
+            showError(
+                "Profile record was not found."
+            );
+
+            return;
+
+        }
+
+
+        /* Fill fields */
+
+        document.getElementById("fullName").value =
+            profile.full_name || "";
+
+
+        document.getElementById("email").value =
+            profile.email || currentUser.email || "";
+
+
+        document.getElementById("phone").value =
+            profile.phone || "";
+
+
+        document.getElementById("city").value =
+            profile.city || "";
+
+
+        document.getElementById("specialization").value =
+            profile.specialization || "";
+
+
+        document.getElementById("bio").value =
+            profile.bio || "";
+
+
+        document.getElementById("loginEmail").textContent =
+            currentUser.email || profile.email || "";
+
+
+        document.getElementById("accountRole").textContent =
+            profile.role || "Admin";
+
+
+        /* Header name */
+
+        const displayName =
+            profile.full_name || "Adv. Safi ur Rehman";
+
+
+        document.getElementById("sideName").textContent =
+            displayName;
+
+
+        document.getElementById("topName").textContent =
+            displayName;
+
+
+        /* Profile image */
+
+        if (profile.profile_image) {
+
+            document.getElementById("sideAvatar").src =
+                profile.profile_image;
+
+            document.getElementById("topAvatar").src =
+                profile.profile_image;
+
+        }
+
+    } catch (error) {
+
+        console.error(error);
+
+        showError(
+            "An unexpected error occurred while loading settings."
+        );
+
+    }
+
+}
+
+
+/* =========================
+   SAVE SETTINGS
+========================= */
+
+async function saveSettings() {
+
+    if (!currentUser) {
+
+        showError("Please login again.");
+
+        return;
+
+    }
+
+
+    const saveButton =
+        document.getElementById("saveTopBtn");
+
+
+    saveButton.disabled = true;
+
+    saveButton.textContent = "Saving...";
+
+
+    hideMessages();
+
+
+    try {
+
+        const fullName =
+            document.getElementById("fullName").value.trim();
+
+
+        const email =
+            document.getElementById("email").value.trim();
+
+
+        const phone =
+            document.getElementById("phone").value.trim();
+
+
+        const city =
+            document.getElementById("city").value.trim();
+
+
+        const specialization =
+            document.getElementById("specialization").value.trim();
+
+
+        const bio =
+            document.getElementById("bio").value.trim();
+
+
+        if (!fullName) {
+
+            showError("Full Name is required.");
+
+            return;
+
+        }
+
+
+        if (!email) {
+
+            showError("Email is required.");
+
+            return;
+
+        }
+
+
+        /* Update Profile table */
+
+        const {
+            error: profileError
+        } = await supabaseClient
+
+            .from("Profile")
+
+            .update({
+
+                full_name: fullName,
+
+                email: email,
+
+                phone: phone,
+
+                city: city,
+
+                specialization: specialization,
+
+                bio: bio
+
+            })
+
+            .eq("id", currentUser.id);
+
+
+        if (profileError) {
+
+            console.error(profileError);
+
+            showError(
+                "Profile could not be updated: " +
+                profileError.message
+            );
+
+            return;
+
+        }
+
+
+        /* Update Auth email if changed */
+
+        if (
+            email.toLowerCase() !==
+            String(currentUser.email || "").toLowerCase()
+        ) {
+
+            const {
+                error: emailError
+            } = await supabaseClient.auth.updateUser({
+
+                email: email
+
+            });
+
+
+            if (emailError) {
+
+                showError(
+                    "Profile saved, but email update failed: " +
+                    emailError.message
+                );
+
+                await loadSettings();
+
+                return;
+
+            }
+
+        }
+
+
+        showSuccess(
+            "Settings saved successfully."
+        );
+
+
+        await loadSettings();
+
+
+    } catch (error) {
+
+        console.error(error);
+
+        showError(
+            "Unable to save settings."
+        );
+
+    } finally {
+
+        saveButton.disabled = false;
+
+        saveButton.textContent = "Save Changes";
+
+    }
+
+}
+
+
+/* =========================
+   CHANGE PASSWORD
+========================= */
+
+async function changePassword() {
+
+    hideMessages();
+
+
+    const newPassword =
+        document.getElementById("newPassword").value;
+
+
+    const confirmPassword =
+        document.getElementById("confirmPassword").value;
+
+
+    if (!newPassword) {
+
+        showError(
+            "Please enter a new password."
+        );
+
+        return;
+
+    }
+
+
+    if (newPassword.length < 6) {
+
+        showError(
+            "Password must contain at least 6 characters."
+        );
+
+        return;
+
+    }
+
+
+    if (newPassword !== confirmPassword) {
+
+        showError(
+            "New password and confirmation do not match."
+        );
+
+        return;
+
+    }
+
+
+    try {
+
+        const {
+            error
+        } = await supabaseClient.auth.updateUser({
+
+            password: newPassword
+
+        });
+
+
+        if (error) {
+
+            console.error(error);
+
+            showError(
+                "Password could not be changed: " +
+                error.message
+            );
+
+            return;
+
+        }
+
+
+        document.getElementById("newPassword").value = "";
+
+        document.getElementById("confirmPassword").value = "";
+
+
+        showSuccess(
+            "Password changed successfully."
+        );
+
+
+    } catch (error) {
+
+        console.error(error);
+
+        showError(
+            "Unable to change password."
+        );
+
+    }
+
+}
+
+
+/* =========================
+   MESSAGES
+========================= */
+
+function showSuccess(message) {
+
+    const box =
+        document.getElementById("successMessage");
+
+
+    box.textContent = message;
+
+    box.style.display = "block";
+
+
+    window.scrollTo({
+
+        top: 0,
+
+        behavior: "smooth"
+
+    });
+
+}
+
+
+function showError(message) {
+
+    const box =
+        document.getElementById("errorMessage");
+
+
+    box.textContent = message;
+
+    box.style.display = "block";
+
+
+    window.scrollTo({
+
+        top: 0,
+
+        behavior: "smooth"
+
+    });
+
+}
+
+
+function hideMessages() {
+
+    document.getElementById(
+        "successMessage"
+    ).style.display = "none";
+
+
+    document.getElementById(
+        "errorMessage"
+    ).style.display = "none";
+
+}
+
+</script>
+
+</body>
+</html>

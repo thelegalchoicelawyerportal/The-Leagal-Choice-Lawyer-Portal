@@ -1,0 +1,451 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<title>Register | The Legal Choice Portal</title>
+
+<link rel="stylesheet" href="portal.css">
+
+<!-- Supabase -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+
+<body>
+
+<div class="login-wrap">
+
+<section class="login-visual">
+<div>
+<div class="muted" style="color:#d7b65d;letter-spacing:2px;text-transform:uppercase">
+Create your account
+</div>
+
+<h1>One Portal.<br>Every Legal Matter.</h1>
+
+<p>
+Register as a lawyer or client and access a clean,
+responsive legal management experience.
+</p>
+
+<a class="btn gold" href="index.html">← Back to Website</a>
+</div>
+</section>
+
+
+<section class="login-card">
+
+<div class="auth">
+
+<div class="auth-brand">
+<img src="assets/logo.png" alt="Logo">
+<h1>Create Your Account</h1>
+<p>JUSTICE · TRUST · SUPPORT</p>
+</div>
+
+
+<form class="authbox" id="registerForm">
+
+<!-- ROLE -->
+<div style="display:flex;gap:8px;margin-bottom:16px">
+
+<button
+type="button"
+id="lawyerBtn"
+class="btn"
+style="flex:1"
+onclick="selectRole('lawyer')">
+⚖ Lawyer
+</button>
+
+<button
+type="button"
+id="clientBtn"
+class="btn light"
+style="flex:1"
+onclick="selectRole('client')">
+♙ Client
+</button>
+
+</div>
+
+
+<!-- FULL NAME -->
+<div class="field">
+
+<label>Full Name</label>
+
+<input
+id="fullName"
+required
+placeholder="Full name">
+
+</div>
+
+
+<!-- EMAIL -->
+<div class="field" style="margin-top:11px">
+
+<label>Email Address</label>
+
+<input
+id="email"
+required
+type="email"
+placeholder="name@example.com">
+
+</div>
+
+
+<!-- PHONE -->
+<div class="field" style="margin-top:11px">
+
+<label>Phone Number</label>
+
+<input
+id="phone"
+type="tel"
+placeholder="+92 3xx xxxxxxx">
+
+</div>
+
+
+<!-- PASSWORD -->
+<div class="field" style="margin-top:11px">
+
+<label>Password</label>
+
+<input
+id="password"
+required
+type="password"
+placeholder="Create password"
+minlength="6">
+
+</div>
+
+
+<!-- CONFIRM PASSWORD -->
+<div class="field" style="margin-top:11px">
+
+<label>Confirm Password</label>
+
+<input
+id="confirmPassword"
+required
+type="password"
+placeholder="Confirm password"
+minlength="6">
+
+</div>
+
+
+<!-- MESSAGE -->
+<div
+id="message"
+style="
+display:none;
+margin-top:15px;
+padding:12px;
+border-radius:8px;
+font-size:14px;
+">
+</div>
+
+
+<!-- REGISTER -->
+<button
+id="registerBtn"
+class="btn gold"
+style="width:100%;margin-top:16px"
+type="submit">
+
+Register
+
+</button>
+
+
+<div class="authfoot">
+Already have an account?
+<a href="portal-login.html">Login</a>
+</div>
+
+</form>
+
+</div>
+
+</section>
+
+</div>
+
+
+<script>
+
+/* ===============================
+   SUPABASE CONFIGURATION
+================================ */
+
+const SUPABASE_URL =
+"https://ibzxisfangonytpknthu.supabase.co";
+
+const SUPABASE_KEY =
+"sb_publishable_S0YKbX1MIaBB9HxL5KoEAw_X0mymq8q";
+
+const supabaseClient =
+window.supabase.createClient(
+SUPABASE_URL,
+SUPABASE_KEY
+);
+
+
+/* ===============================
+   SELECTED ROLE
+================================ */
+
+let selectedRole = "lawyer";
+
+
+function selectRole(role) {
+
+selectedRole = role;
+
+const lawyerBtn =
+document.getElementById("lawyerBtn");
+
+const clientBtn =
+document.getElementById("clientBtn");
+
+
+if (role === "lawyer") {
+
+lawyerBtn.className = "btn";
+clientBtn.className = "btn light";
+
+} else {
+
+lawyerBtn.className = "btn light";
+clientBtn.className = "btn";
+
+}
+
+}
+
+
+/* ===============================
+   MESSAGE
+================================ */
+
+function showMessage(message, success = false) {
+
+const box =
+document.getElementById("message");
+
+box.style.display = "block";
+
+box.textContent = message;
+
+if (success) {
+
+box.style.background = "#e8f7ee";
+box.style.color = "#176b3a";
+
+} else {
+
+box.style.background = "#fdecec";
+box.style.color = "#a12626";
+
+}
+
+}
+
+
+/* ===============================
+   REGISTER
+================================ */
+
+document
+.getElementById("registerForm")
+.addEventListener("submit", async function(event) {
+
+event.preventDefault();
+
+
+const registerBtn =
+document.getElementById("registerBtn");
+
+
+const fullName =
+document.getElementById("fullName")
+.value
+.trim();
+
+
+const email =
+document.getElementById("email")
+.value
+.trim();
+
+
+const phone =
+document.getElementById("phone")
+.value
+.trim();
+
+
+const password =
+document.getElementById("password")
+.value;
+
+
+const confirmPassword =
+document.getElementById("confirmPassword")
+.value;
+
+
+/* PASSWORD CHECK */
+
+if (password !== confirmPassword) {
+
+showMessage("Passwords do not match.");
+
+return;
+
+}
+
+
+/* PASSWORD LENGTH */
+
+if (password.length < 6) {
+
+showMessage("Password must be at least 6 characters.");
+
+return;
+
+}
+
+
+/* BUTTON */
+
+registerBtn.disabled = true;
+registerBtn.textContent = "Creating Account...";
+
+
+try {
+
+/* CREATE SUPABASE AUTH USER */
+
+const { data, error } =
+await supabaseClient.auth.signUp({
+
+email: email,
+
+password: password
+
+});
+
+
+if (error) {
+
+throw error;
+
+}
+
+
+if (!data.user) {
+
+throw new Error("Account could not be created.");
+
+}
+
+
+/* SAVE PROFILE */
+
+const { error: profileError } =
+await supabaseClient
+.from("profiles")
+.insert({
+
+id: data.user.id,
+
+full_name: fullName,
+
+email: email,
+
+role: selectedRole,
+
+phone: phone || null
+
+});
+
+
+/*
+If profile insertion is blocked by
+Row Level Security, the Auth account
+may still have been created.
+*/
+
+if (profileError) {
+
+console.error(profileError);
+
+showMessage(
+"Account created, but profile information could not be saved yet. We will fix the database permission in the next step."
+);
+
+registerBtn.disabled = false;
+registerBtn.textContent = "Register";
+
+return;
+
+}
+
+
+/* SUCCESS */
+
+showMessage(
+"Account created successfully! Please check your email if email confirmation is required.",
+true
+);
+
+
+/* CLEAR FORM */
+
+document
+.getElementById("registerForm")
+.reset();
+
+
+registerBtn.disabled = false;
+registerBtn.textContent = "Register";
+
+
+/* GO TO LOGIN */
+
+setTimeout(function() {
+
+window.location.href =
+"portal-login.html";
+
+}, 2500);
+
+
+} catch (error) {
+
+console.error(error);
+
+showMessage(
+error.message || "Registration failed. Please try again."
+);
+
+registerBtn.disabled = false;
+registerBtn.textContent = "Register";
+
+}
+
+});
+
+</script>
+
+</body>
+</html>

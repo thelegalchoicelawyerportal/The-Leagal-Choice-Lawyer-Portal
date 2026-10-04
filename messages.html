@@ -1,0 +1,1264 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<title>Messages | The Legal Choice Portal</title>
+
+<link rel="stylesheet" href="portal.css">
+
+<style>
+
+.message-layout{
+    display:grid;
+    grid-template-columns:320px 1fr;
+    gap:18px;
+}
+
+.message-list{
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+}
+
+.message-item{
+    padding:15px;
+    border:1px solid #e5e5e5;
+    border-radius:10px;
+    cursor:pointer;
+    background:#fff;
+}
+
+.message-item:hover{
+    background:#fafafa;
+}
+
+.message-item.unread{
+    border-left:4px solid #c9a227;
+}
+
+.message-item strong{
+    display:block;
+    margin-bottom:5px;
+}
+
+.message-preview{
+    font-size:13px;
+    color:#777;
+    line-height:1.4;
+}
+
+.message-time{
+    float:right;
+    font-size:12px;
+    color:#888;
+}
+
+.message-view{
+    min-height:400px;
+}
+
+.message-view h2{
+    margin-top:0;
+}
+
+.message-body{
+    line-height:1.7;
+    color:#555;
+    white-space:pre-wrap;
+}
+
+.message-form{
+    display:none;
+    background:#fff;
+    border:1px solid #ddd;
+    border-radius:12px;
+    padding:20px;
+    margin-bottom:18px;
+}
+
+.message-form input,
+.message-form textarea{
+    width:100%;
+    padding:12px;
+    border:1px solid #ddd;
+    border-radius:7px;
+    margin-bottom:12px;
+    font-family:inherit;
+}
+
+.message-form textarea{
+    min-height:130px;
+    resize:vertical;
+}
+
+.message-actions{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+}
+
+.status{
+    margin-top:10px;
+    font-size:14px;
+}
+
+.empty{
+    text-align:center;
+    padding:40px 20px;
+    color:#777;
+}
+
+.message-contact{
+    color:#777;
+    font-size:13px;
+    margin-top:4px;
+}
+
+.message-status{
+    display:inline-block;
+    margin-top:8px;
+    padding:3px 8px;
+    border-radius:20px;
+    font-size:11px;
+    background:#f0f0f0;
+    color:#666;
+}
+
+.message-status.new{
+    background:#fff4d6;
+    color:#8a6500;
+}
+
+.message-status.read{
+    background:#e9f7ef;
+    color:#287443;
+}
+
+.refresh-btn{
+    margin-left:8px;
+}
+
+@media(max-width:800px){
+
+    .message-layout{
+        grid-template-columns:1fr;
+    }
+
+    .message-view{
+        min-height:250px;
+    }
+
+}
+
+</style>
+
+</head>
+
+<body onload="startMessagesPage()">
+
+<div class="portal">
+
+<!-- =========================
+     SIDEBAR
+========================= -->
+
+<aside class="side">
+
+<a class="portal-brand" href="dashboard.html">
+
+<img src="assets/logo.png" alt="Logo">
+
+<div>
+<strong>The Legal Choice</strong>
+<small>JUSTICE · TRUST · SUPPORT</small>
+</div>
+
+</a>
+
+
+<div class="user-mini">
+
+<img
+class="avatar"
+src="assets/profile.jpg">
+
+<div>
+
+<strong>Adv. Safi ur Rehman Mianwala</strong>
+
+<span>● Online · Lawyer</span>
+
+</div>
+
+</div>
+
+
+<div class="navtitle">Main Menu</div>
+
+
+<a href="dashboard.html">
+<i class="ico">▣</i>
+<span>Dashboard</span>
+</a>
+
+
+<a href="cases.html">
+<i class="ico">▤</i>
+<span>My Cases</span>
+</a>
+
+
+<a href="clients.html">
+<i class="ico">♙</i>
+<span>Clients</span>
+</a>
+
+
+<a href="appointments.html">
+<i class="ico">◫</i>
+<span>Appointments</span>
+</a>
+
+
+<a class="active" href="messages.html">
+<i class="ico">✉</i>
+<span>Messages</span>
+</a>
+
+
+<a href="documents.html">
+<i class="ico">▧</i>
+<span>Documents</span>
+</a>
+
+
+<a href="profile.html">
+<i class="ico">◉</i>
+<span>Profile</span>
+</a>
+
+
+<a href="settings.html">
+<i class="ico">⚙</i>
+<span>Settings</span>
+</a>
+
+
+<div class="navtitle">Account</div>
+
+
+<a href="index.html">
+<i class="ico">⌂</i>
+<span>Public Website</span>
+</a>
+
+
+<a href="#" onclick="portalLogout();return false">
+
+<i class="ico">↪</i>
+<span>Logout</span>
+
+</a>
+
+</aside>
+
+
+<!-- =========================
+     MAIN
+========================= -->
+
+<main class="main">
+
+
+<header class="topbar">
+
+<div class="search">
+
+⌕
+
+<input
+id="topSearch"
+placeholder="Search messages..."
+oninput="searchMessages()">
+
+</div>
+
+
+<div class="top-actions">
+
+<span class="bell">
+♧<b id="topUnreadCount">0</b>
+</span>
+
+
+<a class="top-user" href="profile.html">
+
+<img
+src="assets/profile.jpg">
+
+<div>
+
+<strong>Adv. Safi ur Rehman Mianwala</strong>
+
+<br>
+
+<span class="muted">Lawyer</span>
+
+</div>
+
+</a>
+
+</div>
+
+</header>
+
+
+<div class="content">
+
+
+<!-- =========================
+     HEADING
+========================= -->
+
+<div class="heading">
+
+<div>
+
+<h1>Messages</h1>
+
+<p class="muted">
+Messages received from the public website.
+</p>
+
+</div>
+
+
+<button
+class="btn"
+onclick="loadMessages()">
+
+↻ Refresh
+
+</button>
+
+</div>
+
+
+<!-- =========================
+     NEW MESSAGE
+========================= -->
+
+<div class="message-form" id="messageForm">
+
+<h2>New Message</h2>
+
+<input
+id="recipient"
+type="text"
+placeholder="Client name or email">
+
+<input
+id="subject"
+type="text"
+placeholder="Subject">
+
+<textarea
+id="messageText"
+placeholder="Write a message..."></textarea>
+
+
+<div class="message-actions">
+
+<button
+class="btn gold"
+onclick="sendMessage()">
+
+Send Message
+
+</button>
+
+
+<button
+class="btn"
+onclick="toggleMessageForm()">
+
+Cancel
+
+</button>
+
+</div>
+
+
+<div id="messageStatus" class="status"></div>
+
+</div>
+
+
+<!-- =========================
+     INBOX
+========================= -->
+
+<section class="panel">
+
+<div class="panelhead">
+
+<div>
+
+<h2>
+Inbox · <span id="unreadCount">0</span> unread
+</h2>
+
+<span class="muted">
+Public Website Messages
+</span>
+
+</div>
+
+
+<input
+id="messageSearch"
+type="search"
+placeholder="Search inbox..."
+oninput="searchMessages()"
+style="padding:10px;border:1px solid #ddd;border-radius:7px;">
+
+</div>
+
+
+<div class="panelbody">
+
+<div class="message-layout">
+
+
+<!-- MESSAGE LIST -->
+
+<div>
+
+<div id="messageList" class="message-list">
+
+<div class="empty">
+Loading messages...
+</div>
+
+</div>
+
+</div>
+
+
+<!-- MESSAGE VIEW -->
+
+<div
+class="detail message-view"
+id="messageView">
+
+<div class="empty">
+Select a message to read it.
+</div>
+
+</div>
+
+
+</div>
+
+</div>
+
+</section>
+
+
+</div>
+
+</main>
+
+</div>
+
+
+<!-- MOBILE BAR -->
+
+<div class="mobilebar">
+
+<a class="btn" href="dashboard.html">
+Dashboard
+</a>
+
+<a
+class="btn gold"
+href="portal-login.html"
+onclick="portalLogout();return false">
+
+Logout
+
+</a>
+
+</div>
+
+
+<!-- =========================
+     SUPABASE
+========================= -->
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script src="portal.js"></script>
+
+
+<script>
+
+/* =========================================================
+   SUPABASE CONNECTION
+========================================================= */
+
+const MESSAGES_SUPABASE_URL =
+    "https://ibzxisfangonytpknthu.supabase.co";
+
+const MESSAGES_SUPABASE_KEY =
+    "sb_publishable_S0YKbX1MIaBB9HxL5KoEAw_X0mymq8q";
+
+
+const messagesSupabase =
+    window.supabase.createClient(
+        MESSAGES_SUPABASE_URL,
+        MESSAGES_SUPABASE_KEY
+    );
+
+
+/* =========================================================
+   REAL MESSAGE DATA
+========================================================= */
+
+let messages = [];
+
+
+/* =========================================================
+   START PAGE
+========================================================= */
+
+async function startMessagesPage(){
+
+    try{
+
+        await protectPortal();
+
+        await loadMessages();
+
+    }catch(error){
+
+        console.error(
+            "Messages page error:",
+            error
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   LOAD REAL PUBLIC WEBSITE MESSAGES
+========================================================= */
+
+async function loadMessages(){
+
+    const container =
+        document.getElementById("messageList");
+
+    if(container){
+
+        container.innerHTML =
+            '<div class="empty">Loading messages...</div>';
+
+    }
+
+
+    try{
+
+        const { data, error } =
+            await messagesSupabase
+                .from("chat_messages")
+                .select("*")
+                .order("created_at", {
+                    ascending:false
+                });
+
+
+        if(error){
+
+            console.error(
+                "Load messages error:",
+                error
+            );
+
+            if(container){
+
+                container.innerHTML = `
+                    <div class="empty">
+                        Unable to load messages.<br><br>
+                        <small>${escapeHTML(error.message)}</small>
+                    </div>
+                `;
+
+            }
+
+            return;
+
+        }
+
+
+        messages = data || [];
+
+
+        renderMessages(messages);
+
+
+        updateUnread();
+
+
+    }catch(error){
+
+        console.error(error);
+
+        if(container){
+
+            container.innerHTML =
+                '<div class="empty">Something went wrong while loading messages.</div>';
+
+        }
+
+    }
+
+}
+
+
+/* =========================================================
+   RENDER MESSAGES
+========================================================= */
+
+function renderMessages(list){
+
+    const container =
+        document.getElementById("messageList");
+
+
+    if(!container){
+
+        return;
+
+    }
+
+
+    if(!list.length){
+
+        container.innerHTML =
+            '<div class="empty">No messages found.</div>';
+
+        updateUnread();
+
+        return;
+
+    }
+
+
+    container.innerHTML =
+        list.map(msg => {
+
+            const isUnread =
+                String(msg.status || "").toLowerCase() === "new";
+
+
+            const sender =
+                msg.visitor_name ||
+                "Website Visitor";
+
+
+            const contact =
+                msg.visitor_contact ||
+                "No contact provided";
+
+
+            const message =
+                msg.message ||
+                "";
+
+
+            const time =
+                formatMessageTime(msg.created_at);
+
+
+            return `
+
+                <div
+                    class="message-item ${isUnread ? "unread" : ""}"
+                    onclick="openMessage('${msg.id}')">
+
+                    <span class="message-time">
+                        ${escapeHTML(time)}
+                    </span>
+
+
+                    <strong>
+                        ${escapeHTML(sender)}
+                    </strong>
+
+
+                    <div class="message-contact">
+                        ${escapeHTML(contact)}
+                    </div>
+
+
+                    <div class="message-preview"
+                         style="margin-top:8px">
+
+                        ${escapeHTML(message)}
+
+                    </div>
+
+
+                    <span class="message-status ${isUnread ? "new" : "read"}">
+
+                        ${isUnread ? "New" : "Read"}
+
+                    </span>
+
+                </div>
+
+            `;
+
+        }).join("");
+
+
+    updateUnread();
+
+}
+
+
+/* =========================================================
+   OPEN MESSAGE
+========================================================= */
+
+async function openMessage(id){
+
+    const msg =
+        messages.find(
+            item => String(item.id) === String(id)
+        );
+
+
+    if(!msg){
+
+        return;
+
+    }
+
+
+    const view =
+        document.getElementById("messageView");
+
+
+    const sender =
+        msg.visitor_name ||
+        "Website Visitor";
+
+
+    const contact =
+        msg.visitor_contact ||
+        "No contact provided";
+
+
+    const message =
+        msg.message ||
+        "";
+
+
+    const time =
+        formatMessageTime(msg.created_at);
+
+
+    view.innerHTML = `
+
+        <h2>
+            Message from ${escapeHTML(sender)}
+        </h2>
+
+
+        <div style="margin-bottom:20px">
+
+            <strong>
+                ${escapeHTML(sender)}
+            </strong>
+
+            <span class="muted">
+                · ${escapeHTML(time)}
+            </span>
+
+            <br>
+
+            <span class="muted">
+                ${escapeHTML(contact)}
+            </span>
+
+        </div>
+
+
+        <div class="message-body">
+            ${escapeHTML(message)}
+        </div>
+
+
+        <div
+            style="margin-top:30px;display:flex;gap:10px;flex-wrap:wrap">
+
+
+            ${
+                contact &&
+                contact !== "No contact provided"
+                ?
+
+                `<button
+                    class="btn gold"
+                    onclick="replyTo('${escapeHTML(contact)}')">
+                    Reply
+                </button>`
+
+                :
+
+                ""
+
+            }
+
+
+            <button
+                class="btn"
+                onclick="deleteMessage('${msg.id}')">
+
+                Delete
+
+            </button>
+
+        </div>
+
+    `;
+
+
+    /* Mark message as read */
+
+    if(
+        String(msg.status || "").toLowerCase() === "new"
+    ){
+
+        const { error } =
+            await messagesSupabase
+                .from("chat_messages")
+                .update({
+                    status:"read"
+                })
+                .eq("id", msg.id);
+
+
+        if(error){
+
+            console.error(
+                "Mark as read error:",
+                error
+            );
+
+        }else{
+
+            msg.status = "read";
+
+        }
+
+    }
+
+
+    renderMessages(messages);
+
+}
+
+
+/* =========================================================
+   REPLY
+========================================================= */
+
+function replyTo(contact){
+
+    toggleMessageForm();
+
+
+    const recipient =
+        document.getElementById("recipient");
+
+
+    if(recipient){
+
+        recipient.value =
+            contact || "";
+
+    }
+
+}
+
+
+/* =========================================================
+   NEW MESSAGE FORM
+========================================================= */
+
+function toggleMessageForm(){
+
+    const form =
+        document.getElementById("messageForm");
+
+
+    if(!form){
+
+        return;
+
+    }
+
+
+    if(form.style.display === "block"){
+
+        form.style.display = "none";
+
+    }else{
+
+        form.style.display = "block";
+
+
+        form.scrollIntoView({
+            behavior:"smooth",
+            block:"start"
+        });
+
+    }
+
+}
+
+
+/* =========================================================
+   SEND MESSAGE
+========================================================= */
+
+function sendMessage(){
+
+    const recipient =
+        document.getElementById("recipient").value.trim();
+
+
+    const subject =
+        document.getElementById("subject").value.trim();
+
+
+    const messageText =
+        document.getElementById("messageText").value.trim();
+
+
+    const status =
+        document.getElementById("messageStatus");
+
+
+    if(!recipient){
+
+        status.textContent =
+            "Please enter a recipient.";
+
+        return;
+
+    }
+
+
+    if(!subject){
+
+        status.textContent =
+            "Please enter a subject.";
+
+        return;
+
+    }
+
+
+    if(!messageText){
+
+        status.textContent =
+            "Please write a message.";
+
+        return;
+
+    }
+
+
+    /*
+       The public chat currently stores incoming messages.
+       This New Message form is kept for the portal interface.
+    */
+
+    status.textContent =
+        "This form is for portal messaging. Incoming public website messages appear automatically in the Inbox.";
+
+}
+
+
+/* =========================================================
+   DELETE MESSAGE
+========================================================= */
+
+async function deleteMessage(id){
+
+    const confirmed =
+        confirm(
+            "Are you sure you want to delete this message?"
+        );
+
+
+    if(!confirmed){
+
+        return;
+
+    }
+
+
+    try{
+
+        const { error } =
+            await messagesSupabase
+                .from("chat_messages")
+                .delete()
+                .eq("id", id);
+
+
+        if(error){
+
+            console.error(
+                "Delete message error:",
+                error
+            );
+
+            alert(
+                "Unable to delete message: " +
+                error.message
+            );
+
+            return;
+
+        }
+
+
+        messages =
+            messages.filter(
+                item =>
+                    String(item.id) !== String(id)
+            );
+
+
+        document.getElementById(
+            "messageView"
+        ).innerHTML = `
+
+            <div class="empty">
+                Message deleted.
+            </div>
+
+        `;
+
+
+        renderMessages(messages);
+
+
+    }catch(error){
+
+        console.error(error);
+
+        alert(
+            "Something went wrong while deleting the message."
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   SEARCH
+========================================================= */
+
+function searchMessages(){
+
+    const searchBox =
+        document.getElementById("messageSearch");
+
+
+    const topSearch =
+        document.getElementById("topSearch");
+
+
+    if(!searchBox || !topSearch){
+
+        return;
+
+    }
+
+
+    const query =
+        (
+            searchBox.value ||
+            topSearch.value ||
+            ""
+        ).toLowerCase().trim();
+
+
+    if(!query){
+
+        renderMessages(messages);
+
+        return;
+
+    }
+
+
+    const filtered =
+        messages.filter(msg => {
+
+            const name =
+                String(
+                    msg.visitor_name || ""
+                ).toLowerCase();
+
+
+            const contact =
+                String(
+                    msg.visitor_contact || ""
+                ).toLowerCase();
+
+
+            const message =
+                String(
+                    msg.message || ""
+                ).toLowerCase();
+
+
+            return (
+
+                name.includes(query) ||
+
+                contact.includes(query) ||
+
+                message.includes(query)
+
+            );
+
+        });
+
+
+    renderMessages(filtered);
+
+}
+
+
+/* =========================================================
+   UNREAD COUNT
+========================================================= */
+
+function updateUnread(){
+
+    const count =
+        messages.filter(
+            msg =>
+                String(
+                    msg.status || ""
+                ).toLowerCase() === "new"
+        ).length;
+
+
+    const unreadElement =
+        document.getElementById(
+            "unreadCount"
+        );
+
+
+    if(unreadElement){
+
+        unreadElement.textContent =
+            count;
+
+    }
+
+
+    const topUnread =
+        document.getElementById(
+            "topUnreadCount"
+        );
+
+
+    if(topUnread){
+
+        topUnread.textContent =
+            count;
+
+    }
+
+}
+
+
+/* =========================================================
+   FORMAT TIME
+========================================================= */
+
+function formatMessageTime(value){
+
+    if(!value){
+
+        return "";
+
+    }
+
+
+    try{
+
+        const date =
+            new Date(value);
+
+
+        if(isNaN(date.getTime())){
+
+            return String(value);
+
+        }
+
+
+        return date.toLocaleString(
+            "en-PK",
+            {
+                dateStyle:"medium",
+                timeStyle:"short"
+            }
+        );
+
+    }catch(error){
+
+        return String(value);
+
+    }
+
+}
+
+
+/* =========================================================
+   HTML ESCAPE
+========================================================= */
+
+function escapeHTML(value){
+
+    return String(value ?? "")
+        .replace(/&/g,"&amp;")
+        .replace(/</g,"&lt;")
+        .replace(/>/g,"&gt;")
+        .replace(/"/g,"&quot;")
+        .replace(/'/g,"&#039;");
+
+}
+
+</script>
+
+</body>
+</html>

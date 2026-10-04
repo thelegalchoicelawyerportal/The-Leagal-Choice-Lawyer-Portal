@@ -1,0 +1,1158 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<title>Videos Management | The Legal Choice</title>
+
+<link rel="stylesheet" href="portal.css">
+
+<style>
+.videos-wrap{
+    padding:30px;
+}
+
+.video-admin-head{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:20px;
+    margin-bottom:25px;
+    flex-wrap:wrap;
+}
+
+.video-admin-head h1{
+    margin:0 0 6px;
+}
+
+.video-admin-head p{
+    margin:0;
+}
+
+.video-form{
+    background:#fff;
+    border-radius:14px;
+    padding:25px;
+    margin-bottom:25px;
+    box-shadow:0 8px 30px rgba(0,0,0,.07);
+}
+
+.video-form h2{
+    margin-top:0;
+}
+
+.field{
+    margin-bottom:17px;
+}
+
+.field label{
+    display:block;
+    font-weight:600;
+    margin-bottom:7px;
+}
+
+.field input,
+.field select,
+.field textarea{
+    width:100%;
+    padding:12px 13px;
+    border:1px solid #ddd;
+    border-radius:8px;
+    font-size:15px;
+    box-sizing:border-box;
+    font-family:inherit;
+}
+
+.field textarea{
+    min-height:100px;
+    resize:vertical;
+}
+
+.video-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fill,minmax(290px,1fr));
+    gap:20px;
+}
+
+.video-card{
+    background:#fff;
+    border-radius:14px;
+    overflow:hidden;
+    box-shadow:0 8px 30px rgba(0,0,0,.07);
+}
+
+.video-thumb{
+    width:100%;
+    aspect-ratio:16/9;
+    background:#eee;
+    position:relative;
+}
+
+.video-thumb img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    display:block;
+}
+
+.video-info{
+    padding:18px;
+}
+
+.video-info h3{
+    margin:0 0 8px;
+}
+
+.video-category{
+    display:inline-block;
+    font-size:12px;
+    padding:5px 9px;
+    border-radius:20px;
+    background:#f3f3f3;
+    margin-bottom:10px;
+}
+
+.video-description{
+    color:#777;
+    font-size:14px;
+    line-height:1.5;
+    margin:8px 0 15px;
+}
+
+.video-actions{
+    display:flex;
+    gap:8px;
+    flex-wrap:wrap;
+}
+
+.message{
+    display:none;
+    padding:12px 15px;
+    border-radius:8px;
+    margin-bottom:18px;
+    line-height:1.5;
+}
+
+.message.show{
+    display:block;
+}
+
+.message.error{
+    background:#fff0f0;
+    color:#a52828;
+    border:1px solid #f0caca;
+}
+
+.message.success{
+    background:#effaf3;
+    color:#23784d;
+    border:1px solid #c8ead4;
+}
+
+.empty{
+    background:#fff;
+    padding:35px;
+    border-radius:14px;
+    text-align:center;
+    color:#777;
+    box-shadow:0 8px 30px rgba(0,0,0,.07);
+}
+
+.loading{
+    background:#fff;
+    padding:30px;
+    border-radius:14px;
+    text-align:center;
+}
+
+.form-buttons{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+}
+
+.hidden{
+    display:none !important;
+}
+
+@media(max-width:700px){
+    .videos-wrap{
+        padding:18px;
+    }
+
+    .video-grid{
+        grid-template-columns:1fr;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="portal">
+
+<!-- SIDEBAR -->
+<aside class="side">
+
+<a class="portal-brand" href="dashboard.html">
+<img src="assets/logo.png" alt="Logo">
+<div>
+<strong>The Legal Choice</strong>
+<small>JUSTICE · TRUST · SUPPORT</small>
+</div>
+</a>
+
+<div class="user-mini">
+<img class="avatar"
+src="assets/profile.jpg">
+
+<div>
+<strong>Adv. Safi ur Rehman Mianwala</strong>
+<span>● Online · Lawyer</span>
+</div>
+</div>
+
+<div class="navtitle">Main Menu</div>
+
+<a href="dashboard.html">
+<i class="ico">▣</i>
+<span>Dashboard</span>
+</a>
+
+<a href="cases.html">
+<i class="ico">▤</i>
+<span>My Cases</span>
+</a>
+
+<a href="clients.html">
+<i class="ico">♙</i>
+<span>Clients</span>
+</a>
+
+<a href="appointments.html">
+<i class="ico">◫</i>
+<span>Appointments</span>
+</a>
+
+<a href="messages.html">
+<i class="ico">✉</i>
+<span>Messages</span>
+</a>
+
+<a href="documents.html">
+<i class="ico">▧</i>
+<span>Documents</span>
+</a>
+
+<a class="active" href="videos-admin.html">
+<i class="ico">▶</i>
+<span>Videos</span>
+</a>
+
+<a href="profile.html">
+<i class="ico">◉</i>
+<span>Profile</span>
+</a>
+
+<a href="settings.html">
+<i class="ico">⚙</i>
+<span>Settings</span>
+</a>
+
+<div class="navtitle">Account</div>
+
+<a href="index.html">
+<i class="ico">⌂</i>
+<span>Public Website</span>
+</a>
+
+<a href="#" onclick="portalLogout();return false">
+<i class="ico">↪</i>
+<span>Logout</span>
+</a>
+
+</aside>
+
+
+<!-- MAIN -->
+<main class="main">
+
+<header class="topbar">
+
+<div class="search">
+⌕
+<input placeholder="Search videos...">
+</div>
+
+<div class="top-actions">
+
+<a class="top-user" href="profile.html">
+
+<img
+src="assets/profile.jpg">
+
+<div>
+<strong>Adv. Safi ur Rehman Mianwala</strong>
+<br>
+<span class="muted">Administrator</span>
+</div>
+
+</a>
+
+</div>
+
+</header>
+
+
+<div class="content">
+
+<div class="videos-wrap">
+
+<div class="video-admin-head">
+
+<div>
+<h1>Videos Management</h1>
+<p class="muted">
+Manage YouTube videos displayed on The Legal Choice website.
+</p>
+</div>
+
+<a class="btn light" href="index.html">
+View Website
+</a>
+
+</div>
+
+
+<div id="message" class="message"></div>
+
+
+<!-- ADD / EDIT FORM -->
+<section class="video-form">
+
+<h2 id="formTitle">Add YouTube Video</h2>
+
+<form id="videoForm">
+
+<input type="hidden" id="editingId">
+
+<div class="field">
+<label for="title">Video Title</label>
+<input
+id="title"
+type="text"
+required
+placeholder="Enter video title">
+</div>
+
+
+<div class="field">
+<label for="youtubeUrl">YouTube Video Link</label>
+<input
+id="youtubeUrl"
+type="url"
+required
+placeholder="https://www.youtube.com/watch?v=...">
+</div>
+
+
+<div class="field">
+<label for="category">Category</label>
+
+<select id="category">
+
+<option value="General">General</option>
+<option value="Legal Awareness">Legal Awareness</option>
+<option value="Civil Law">Civil Law</option>
+<option value="Criminal Law">Criminal Law</option>
+<option value="Family Law">Family Law</option>
+<option value="Property Law">Property Law</option>
+<option value="Corporate & Business">Corporate & Business</option>
+<option value="Shariah Advisory">Shariah Advisory</option>
+</select>
+
+</div>
+
+
+<div class="field">
+<label for="description">Description</label>
+
+<textarea
+id="description"
+placeholder="Write a short description about this video..."></textarea>
+
+</div>
+
+
+<div class="form-buttons">
+
+<button
+class="btn gold"
+id="saveButton"
+type="submit">
+Add Video
+</button>
+
+<button
+class="btn light hidden"
+id="cancelButton"
+type="button"
+onclick="cancelEdit()">
+Cancel Edit
+</button>
+
+</div>
+
+</form>
+
+</section>
+
+
+<!-- VIDEO LIST -->
+<section>
+
+<div class="video-admin-head">
+
+<div>
+<h2>Published Videos</h2>
+<p class="muted">
+These videos are stored in your Supabase database.
+</p>
+</div>
+
+</div>
+
+
+<div id="loading" class="loading">
+Loading videos...
+</div>
+
+
+<div id="empty" class="empty hidden">
+<h3>No Videos Yet</h3>
+<p>Add your first YouTube video using the form above.</p>
+</div>
+
+
+<div id="videoGrid" class="video-grid"></div>
+
+</section>
+
+</div>
+
+</div>
+
+</main>
+
+</div>
+
+
+<!-- MOBILE BAR -->
+<div class="mobilebar">
+
+<a class="btn" href="dashboard.html">
+Dashboard
+</a>
+
+<a class="btn gold" href="index.html">
+Website
+</a>
+
+<a class="btn gold" href="#" onclick="portalLogout();return false">
+Logout
+</a>
+
+</div>
+
+
+<!-- SUPABASE -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script src="portal.js"></script>
+
+
+<script>
+
+const SUPABASE_URL =
+"https://ibzxisfangonytpknthu.supabase.co";
+
+const SUPABASE_ANON_KEY =
+"sb_publishable_S0YKbX1MIaBB9HxL5KoEAw_X0mymq8q";
+
+const supabaseClient =
+window.supabase.createClient(
+SUPABASE_URL,
+SUPABASE_ANON_KEY
+);
+
+
+const videoForm =
+document.getElementById("videoForm");
+
+const editingId =
+document.getElementById("editingId");
+
+const titleInput =
+document.getElementById("title");
+
+const youtubeUrlInput =
+document.getElementById("youtubeUrl");
+
+const categoryInput =
+document.getElementById("category");
+
+const descriptionInput =
+document.getElementById("description");
+
+const videoGrid =
+document.getElementById("videoGrid");
+
+const loading =
+document.getElementById("loading");
+
+const empty =
+document.getElementById("empty");
+
+const message =
+document.getElementById("message");
+
+const formTitle =
+document.getElementById("formTitle");
+
+const saveButton =
+document.getElementById("saveButton");
+
+const cancelButton =
+document.getElementById("cancelButton");
+
+
+function showMessage(text,type){
+
+message.textContent = text;
+
+message.className =
+"message show " + type;
+
+setTimeout(function(){
+
+message.className = "message";
+
+},4000);
+
+}
+
+
+function getYouTubeId(url){
+
+try{
+
+const parsed =
+new URL(url);
+
+if(parsed.hostname.includes("youtube.com")){
+
+if(parsed.searchParams.get("v")){
+
+return parsed.searchParams.get("v");
+
+}
+
+if(parsed.pathname.startsWith("/shorts/")){
+
+return parsed.pathname.split("/shorts/")[1].split("/")[0];
+
+}
+
+if(parsed.pathname.startsWith("/embed/")){
+
+return parsed.pathname.split("/embed/")[1].split("/")[0];
+
+}
+
+}
+
+if(parsed.hostname === "youtu.be"){
+
+return parsed.pathname.substring(1).split("/")[0];
+
+}
+
+}catch(error){
+
+return null;
+
+}
+
+return null;
+
+}
+
+
+function getThumbnail(youtubeId){
+
+return "https://img.youtube.com/vi/" +
+youtubeId +
+"/hqdefault.jpg";
+
+}
+
+
+async function checkAdmin(){
+
+try{
+
+const {data,error} =
+await supabaseClient.auth.getSession();
+
+if(
+error ||
+!data.session ||
+!data.session.user
+){
+
+window.location.href =
+"portal-login.html";
+
+return false;
+
+}
+
+const user =
+data.session.user;
+
+
+const {data:profile,error:profileError} =
+await supabaseClient
+.from("Profile")
+.select("id,email,role,full_name")
+.eq("id",user.id)
+.maybeSingle();
+
+
+if(
+profileError ||
+!profile ||
+String(profile.role).toLowerCase() !== "admin"
+){
+
+await supabaseClient.auth.signOut();
+
+window.location.href =
+"portal-login.html";
+
+return false;
+
+}
+
+return true;
+
+}catch(error){
+
+console.error(error);
+
+window.location.href =
+"portal-login.html";
+
+return false;
+
+}
+
+}
+
+
+async function loadVideos(){
+
+loading.classList.remove("hidden");
+
+empty.classList.add("hidden");
+
+videoGrid.innerHTML = "";
+
+
+const {data,error} =
+await supabaseClient
+.from("videos")
+.select("*")
+.order("created_at",{ascending:false});
+
+
+loading.classList.add("hidden");
+
+
+if(error){
+
+console.error(error);
+
+showMessage(
+"Unable to load videos: " + error.message,
+"error"
+);
+
+return;
+
+}
+
+
+if(!data || data.length === 0){
+
+empty.classList.remove("hidden");
+
+return;
+
+}
+
+
+data.forEach(function(video){
+
+const youtubeId =
+video.youtube_id ||
+getYouTubeId(video.youtube_url);
+
+const thumbnail =
+youtubeId
+? getThumbnail(youtubeId)
+: "";
+
+
+const card =
+document.createElement("div");
+
+card.className =
+"video-card";
+
+
+card.innerHTML = `
+
+<div class="video-thumb">
+
+${
+thumbnail
+? `<img src="${thumbnail}" alt="${escapeHtml(video.title)}">`
+: ""
+}
+
+</div>
+
+<div class="video-info">
+
+<span class="video-category">
+${escapeHtml(video.category || "General")}
+</span>
+
+<h3>
+${escapeHtml(video.title)}
+</h3>
+
+<div class="video-description">
+${escapeHtml(video.description || "No description")}
+</div>
+
+<div class="video-actions">
+
+<button
+class="btn light"
+onclick="watchVideo('${escapeAttribute(video.youtube_url)}')">
+▶ Watch
+</button>
+
+<button
+class="btn light"
+onclick="editVideo('${video.id}')">
+✎ Edit
+</button>
+
+<button
+class="btn"
+onclick="deleteVideo('${video.id}')">
+Delete
+</button>
+
+</div>
+
+</div>
+
+`;
+
+
+videoGrid.appendChild(card);
+
+});
+
+}
+
+
+function escapeHtml(value){
+
+return String(value || "")
+.replace(/&/g,"&amp;")
+.replace(/</g,"&lt;")
+.replace(/>/g,"&gt;")
+.replace(/"/g,"&quot;")
+.replace(/'/g,"&#039;");
+
+}
+
+
+function escapeAttribute(value){
+
+return String(value || "")
+.replace(/\\/g,"\\\\")
+.replace(/'/g,"\\'");
+
+}
+
+
+function watchVideo(url){
+
+window.open(
+url,
+"_blank",
+"noopener,noreferrer"
+);
+
+}
+
+
+videoForm.addEventListener(
+"submit",
+async function(event){
+
+event.preventDefault();
+
+
+const title =
+titleInput.value.trim();
+
+const youtubeUrl =
+youtubeUrlInput.value.trim();
+
+const category =
+categoryInput.value;
+
+const description =
+descriptionInput.value.trim();
+
+
+const youtubeId =
+getYouTubeId(youtubeUrl);
+
+
+if(!youtubeId){
+
+showMessage(
+"Please enter a valid YouTube video link.",
+"error"
+);
+
+return;
+
+}
+
+
+saveButton.disabled = true;
+
+saveButton.textContent =
+editingId.value
+? "Updating..."
+: "Adding...";
+
+
+try{
+
+const {
+data:sessionData
+} =
+await supabaseClient.auth.getSession();
+
+
+if(
+!sessionData ||
+!sessionData.session
+){
+
+throw new Error(
+"Your admin session has expired. Please login again."
+);
+
+}
+
+
+const user =
+sessionData.session.user;
+
+
+if(editingId.value){
+
+const {error} =
+await supabaseClient
+.from("videos")
+.update({
+
+title:title,
+youtube_url:youtubeUrl,
+category:category,
+description:description,
+youtube_id:youtubeId,
+updated_at:new Date().toISOString()
+
+})
+.eq("id",editingId.value)
+.eq("created_by",user.id);
+
+
+if(error){
+
+throw error;
+
+}
+
+
+showMessage(
+"Video updated successfully.",
+"success"
+);
+
+}else{
+
+const {error} =
+await supabaseClient
+.from("videos")
+.insert({
+
+title:title,
+youtube_url:youtubeUrl,
+category:category,
+description:description,
+youtube_id:youtubeId,
+created_by:user.id
+
+});
+
+
+if(error){
+
+throw error;
+
+}
+
+
+showMessage(
+"Video added successfully.",
+"success"
+);
+
+}
+
+
+resetForm();
+
+await loadVideos();
+
+
+}catch(error){
+
+console.error(error);
+
+showMessage(
+error.message || "Something went wrong.",
+"error"
+);
+
+}finally{
+
+saveButton.disabled = false;
+
+saveButton.textContent =
+editingId.value
+? "Update Video"
+: "Add Video";
+
+}
+
+});
+
+
+async function editVideo(id){
+
+const {data,error} =
+await supabaseClient
+.from("videos")
+.select("*")
+.eq("id",id)
+.single();
+
+
+if(error){
+
+showMessage(
+"Unable to open video: " + error.message,
+"error"
+);
+
+return;
+
+}
+
+
+editingId.value =
+data.id;
+
+titleInput.value =
+data.title || "";
+
+youtubeUrlInput.value =
+data.youtube_url || "";
+
+categoryInput.value =
+data.category || "General";
+
+descriptionInput.value =
+data.description || "";
+
+
+formTitle.textContent =
+"Edit YouTube Video";
+
+saveButton.textContent =
+"Update Video";
+
+cancelButton.classList.remove(
+"hidden"
+);
+
+
+window.scrollTo({
+top:0,
+behavior:"smooth"
+});
+
+}
+
+
+async function deleteVideo(id){
+
+const confirmed =
+confirm(
+"Are you sure you want to delete this video?"
+);
+
+
+if(!confirmed){
+
+return;
+
+}
+
+
+try{
+
+const {data:sessionData} =
+await supabaseClient.auth.getSession();
+
+
+if(
+!sessionData ||
+!sessionData.session
+){
+
+throw new Error(
+"Your admin session has expired."
+);
+
+}
+
+
+const user =
+sessionData.session.user;
+
+
+const {error} =
+await supabaseClient
+.from("videos")
+.delete()
+.eq("id",id)
+.eq("created_by",user.id);
+
+
+if(error){
+
+throw error;
+
+}
+
+
+showMessage(
+"Video deleted successfully.",
+"success"
+);
+
+await loadVideos();
+
+
+}catch(error){
+
+console.error(error);
+
+showMessage(
+error.message || "Unable to delete video.",
+"error"
+);
+
+}
+
+}
+
+
+function cancelEdit(){
+
+resetForm();
+
+}
+
+
+function resetForm(){
+
+editingId.value = "";
+
+titleInput.value = "";
+
+youtubeUrlInput.value = "";
+
+categoryInput.value =
+"General";
+
+descriptionInput.value = "";
+
+
+formTitle.textContent =
+"Add YouTube Video";
+
+saveButton.textContent =
+"Add Video";
+
+cancelButton.classList.add(
+"hidden"
+);
+
+}
+
+
+(async function(){
+
+const isAdmin =
+await checkAdmin();
+
+if(isAdmin){
+
+await loadVideos();
+
+}
+
+})();
+
+</script>
+
+</body>
+</html>

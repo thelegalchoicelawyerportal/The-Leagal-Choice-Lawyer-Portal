@@ -1,0 +1,1677 @@
+<!doctype html>
+
+<html lang="en"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1"><title>Documents | The Legal Choice Portal</title><link rel="stylesheet" href="portal.css"><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><style>
+
+.document-tools{
+    display:flex;
+    gap:12px;
+    flex-wrap:wrap;
+    align-items:center;
+}
+
+.document-tools input{
+    min-width:240px;
+    padding:12px 14px;
+    border:1px solid #ddd;
+    border-radius:8px;
+}
+
+.upload-box{
+    display:none;
+    background:#fff;
+    border:1px solid #ddd;
+    border-radius:12px;
+    padding:20px;
+    margin-bottom:20px;
+}
+
+.upload-grid{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:14px;
+}
+
+.upload-grid input,
+.upload-grid select{
+    width:100%;
+    padding:11px 12px;
+    border:1px solid #ddd;
+    border-radius:7px;
+}
+
+.upload-grid .full{
+    grid-column:1/-1;
+}
+
+.file-name{
+    padding:10px;
+    background:#f7f7f7;
+    border-radius:7px;
+    font-size:14px;
+}
+
+.doc-actions{
+    display:flex;
+    gap:8px;
+    flex-wrap:wrap;
+}
+
+.doc-btn{
+    border:0;
+    cursor:pointer;
+    padding:7px 10px;
+    border-radius:6px;
+    font-size:13px;
+}
+
+.view-btn{
+    background:#eee;
+}
+
+.download-btn{
+    background:#e7c36b;
+}
+
+.delete-btn{
+    background:#f3d1d1;
+}
+
+.empty-state{
+    text-align:center;
+    padding:35px;
+    color:#777;
+}
+
+.status-message{
+    margin-top:12px;
+    font-size:14px;
+}
+
+.success-message{
+    color:#237a42;
+}
+
+.error-message{
+    color:#b42318;
+}
+
+@media(max-width:700px){
+
+    .upload-grid{
+        grid-template-columns:1fr;
+    }
+
+    .upload-grid .full{
+        grid-column:auto;
+    }
+
+    .document-tools{
+        width:100%;
+    }
+
+    .document-tools input{
+        width:100%;
+        min-width:0;
+    }
+
+    .tablewrap{
+        overflow-x:auto;
+    }
+}
+
+</style></head><body onload="protectPortal()"><div class="portal"><!-- =========================
+     SIDEBAR
+========================= --><aside class="side"><a class="portal-brand" href="dashboard.html"><img src="assets/logo.png" alt="The Legal Choice Logo"><div>
+<strong>The Legal Choice</strong>
+<small>JUSTICE · TRUST · SUPPORT</small>
+</div></a><div class="user-mini"><img
+class="avatar"
+src="assets/profile.jpg"
+alt="Adv. Safi ur Rehman">
+
+<div><strong id="sideUserName">
+Adv. Safi ur Rehman Mianwala
+</strong><span>● Online · Lawyer</span>
+
+</div></div><div class="navtitle">
+Main Menu
+</div><a href="dashboard.html">
+<i class="ico">▣</i>
+<span>Dashboard</span>
+</a><a href="cases.html">
+<i class="ico">▤</i>
+<span>My Cases</span>
+</a><a href="clients.html">
+<i class="ico">♙</i>
+<span>Clients</span>
+</a><a href="appointments.html">
+<i class="ico">◫</i>
+<span>Appointments</span>
+</a><a href="messages.html">
+<i class="ico">✉</i>
+<span>Messages</span>
+</a><a class="active" href="documents.html">
+<i class="ico">▧</i>
+<span>Documents</span>
+</a><a href="profile.html">
+<i class="ico">◉</i>
+<span>Profile</span>
+</a><a href="settings.html">
+<i class="ico">⚙</i>
+<span>Settings</span>
+</a><div class="navtitle">
+Account
+</div><a href="index.html">
+<i class="ico">⌂</i>
+<span>Public Website</span>
+</a><a href="#" onclick="portalLogout();return false">
+<i class="ico">↪</i>
+<span>Logout</span>
+</a></aside><!-- =========================
+     MAIN
+========================= --><main class="main"><header class="topbar"><div class="search">⌕
+
+<input
+id="topSearch"
+placeholder="Search documents, cases, clients..."
+oninput="searchDocuments()">
+
+</div><div class="top-actions"><span class="bell">
+♧<b>3</b>
+</span><a class="top-user" href="profile.html"><img
+id="topUserImage"
+src="assets/profile.jpg"
+alt="Profile">
+
+<div><strong id="topUserName">
+Adv. Safi ur Rehman Mianwala
+</strong><br><span class="muted">
+Lawyer
+</span></div></a></div></header><div class="content"><!-- =========================
+     HEADING
+========================= --><div class="heading"><div><h1>
+Documents
+</h1><p class="muted">
+Store and organize case-related documents securely.
+</p></div><button
+class="btn gold"
+type="button"
+onclick="toggleUpload()">
+
+＋ Upload Document
+
+</button></div><!-- =========================
+     UPLOAD BOX
+========================= --><div
+class="upload-box"
+id="uploadBox"><h2>
+Upload Document
+</h2><p class="muted">
+Upload a document and connect it with a case.
+</p><div class="upload-grid"><input
+id="caseNumber"
+type="text"
+placeholder="Case Number (e.g. C001)">
+
+<input
+id="caseTitle"
+type="text"
+placeholder="Case Title">
+
+<input
+id="clientName"
+type="text"
+placeholder="Client Name">
+
+<select id="documentType"><option value="">
+Select Document Type
+</option><option value="PDF">
+PDF
+</option><option value="DOC">
+DOC
+</option><option value="DOCX">
+DOCX
+</option><option value="JPG">
+JPG
+</option><option value="PNG">
+PNG
+</option><option value="Other">
+Other
+</option></select><div class="full"><input
+id="documentFile"
+type="file"
+accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
+onchange="showSelectedFile()">
+
+<div
+id="selectedFile"
+class="file-name"
+style="margin-top:8px">No file selected
+
+</div></div></div><div
+style="margin-top:15px;display:flex;gap:10px;flex-wrap:wrap"><button
+class="btn gold"
+type="button"
+id="uploadButton"
+onclick="uploadDocument()">
+
+Upload
+
+</button><button
+class="btn"
+type="button"
+onclick="toggleUpload()">
+
+Cancel
+
+</button></div><div
+id="uploadStatus"
+class="status-message">
+</div></div><!-- =========================
+     DOCUMENT PANEL
+========================= --><section class="panel"><div class="panelhead"><div><h2>
+Recent Documents
+</h2><span class="muted">
+Secure files
+</span></div><div class="document-tools"><input
+id="documentSearch"
+type="search"
+placeholder="Search documents..."
+oninput="searchDocuments()">
+
+</div></div><div class="tablewrap"><table class="table"><thead><tr><th>
+Document
+</th><th>
+Case
+</th><th>
+Client
+</th><th>
+Type
+</th><th>
+Uploaded
+</th><th>
+Action
+</th></tr></thead><tbody id="documentsBody"><tr><td colspan="6"><div class="empty-state">
+Loading documents...
+</div></td></tr></tbody></table></div></section></div></main></div><!-- =========================
+     MOBILE BAR
+========================= --><div class="mobilebar"><a
+class="btn"
+href="dashboard.html">
+
+Dashboard
+
+</a><a
+class="btn gold"
+href="portal-login.html"
+onclick="portalLogout();return false">
+
+Logout
+
+</a></div><!-- =========================
+     PORTAL JS
+========================= --><script src="portal.js"></script><script>
+
+/* =========================================
+   SUPABASE
+========================================= */
+
+const DOCUMENTS_SUPABASE_URL =
+"https://ibzxisfangonytpknthu.supabase.co";
+
+const DOCUMENTS_SUPABASE_KEY =
+"sb_publishable_S0YKbX1MIaBB9HxL5KoEAw_X0mymq8q";
+
+
+const documentsSupabase =
+window.supabase.createClient(
+    DOCUMENTS_SUPABASE_URL,
+    DOCUMENTS_SUPABASE_KEY
+);
+
+
+/* =========================================
+   DOCUMENT DATA
+========================================= */
+
+let allDocuments = [];
+
+
+/* =========================================
+   CURRENT USER
+========================================= */
+
+async function getDocumentsUser(){
+
+    const {
+        data,
+        error
+    } =
+    await documentsSupabase.auth.getSession();
+
+
+    if(
+        error ||
+        !data.session ||
+        !data.session.user
+    ){
+
+        window.location.href =
+            "portal-login.html";
+
+        return null;
+    }
+
+
+    return data.session.user;
+}
+
+
+/* =========================================
+   LOAD PROFILE HEADER
+========================================= */
+
+async function loadDocumentProfile(){
+
+    try{
+
+        const user =
+            await getDocumentsUser();
+
+
+        if(!user){
+            return;
+        }
+
+
+        const {
+            data: profile,
+            error
+        } =
+        await documentsSupabase
+            .from("Profile")
+            .select(
+                "full_name,profile_image"
+            )
+            .eq(
+                "id",
+                user.id
+            )
+            .maybeSingle();
+
+
+        if(error){
+
+            console.error(
+                "Profile loading error:",
+                error
+            );
+
+            return;
+        }
+
+
+        if(profile){
+
+            const name =
+                profile.full_name ||
+                "Adv. Safi ur Rehman Mianwala";
+
+
+            const sideName =
+                window.document.getElementById(
+                    "sideUserName"
+                );
+
+
+            const topName =
+                window.document.getElementById(
+                    "topUserName"
+                );
+
+
+            if(sideName){
+                sideName.textContent =
+                    name;
+            }
+
+
+            if(topName){
+                topName.textContent =
+                    name;
+            }
+
+
+            if(profile.profile_image){
+
+                const topImage =
+                    window.document.getElementById(
+                        "topUserImage"
+                    );
+
+
+                if(topImage){
+
+                    topImage.src =
+                        profile.profile_image;
+
+                }
+
+            }
+
+        }
+
+    }catch(error){
+
+        console.error(
+            "Profile header error:",
+            error
+        );
+
+    }
+}
+
+
+/* =========================================
+   LOAD DOCUMENTS
+========================================= */
+
+async function loadDocuments(){
+
+    const body =
+        window.document.getElementById(
+            "documentsBody"
+        );
+
+
+    if(!body){
+        return;
+    }
+
+
+    body.innerHTML = `
+        <tr>
+            <td colspan="6">
+                <div class="empty-state">
+                    Loading documents...
+                </div>
+            </td>
+        </tr>
+    `;
+
+
+    try{
+
+        const user =
+            await getDocumentsUser();
+
+
+        if(!user){
+            return;
+        }
+
+
+        const {
+            data,
+            error
+        } =
+        await documentsSupabase
+            .from("documents")
+            .select("*")
+            .eq(
+                "uploaded_by",
+                user.id
+            )
+            .order(
+                "created_at",
+                {
+                    ascending:false
+                }
+            );
+
+
+        if(error){
+            throw error;
+        }
+
+
+        allDocuments =
+            data || [];
+
+
+        renderDocuments(
+            allDocuments
+        );
+
+
+    }catch(error){
+
+        console.error(
+            "Documents loading error:",
+            error
+        );
+
+
+        body.innerHTML = `
+            <tr>
+                <td colspan="6">
+                    <div class="empty-state">
+                        Unable to load documents.<br>
+                        <small>${escapeHTML(error.message || "")}</small>
+                    </div>
+                </td>
+            </tr>
+        `;
+
+    }
+
+}
+
+
+/* =========================================
+   RENDER DOCUMENTS
+========================================= */
+
+function renderDocuments(documents){
+
+    const body =
+        window.document.getElementById(
+            "documentsBody"
+        );
+
+
+    if(!body){
+        return;
+    }
+
+
+    if(!documents.length){
+
+        body.innerHTML = `
+            <tr>
+                <td colspan="6">
+                    <div class="empty-state">
+                        No documents found.
+                    </div>
+                </td>
+            </tr>
+        `;
+
+        return;
+    }
+
+
+    body.innerHTML =
+        documents.map(
+            docRecord => {
+
+                const date =
+                    docRecord.created_at
+                    ?
+                    new Date(
+                        docRecord.created_at
+                    ).toLocaleDateString(
+                        "en-US",
+                        {
+                            month:"short",
+                            day:"numeric",
+                            year:"numeric"
+                        }
+                    )
+                    :
+                    "-";
+
+
+                const fileType =
+                    docRecord.document_type ||
+                    getFileType(
+                        docRecord.file_name
+                    );
+
+
+                return `
+
+                    <tr>
+
+                        <td>
+
+                            <strong>
+                                ${escapeHTML(
+                                    docRecord.file_name
+                                )}
+                            </strong>
+
+                        </td>
+
+
+                        <td>
+
+                            ${
+                                docRecord.case_number
+                                ?
+                                "#" +
+                                escapeHTML(
+                                    docRecord.case_number
+                                )
+                                :
+                                "-"
+                            }
+
+                        </td>
+
+
+                        <td>
+
+                            ${
+                                escapeHTML(
+                                    docRecord.client_name || "-"
+                                )
+                            }
+
+                        </td>
+
+
+                        <td>
+
+                            ${escapeHTML(
+                                fileType
+                            )}
+
+                        </td>
+
+
+                        <td>
+
+                            ${date}
+
+                        </td>
+
+
+                        <td>
+
+                            <div class="doc-actions">
+
+
+                                <button
+                                    class="doc-btn view-btn"
+                                    type="button"
+                                    onclick="viewDocument('${docRecord.id}')">
+
+                                    View
+
+                                </button>
+
+
+                                <button
+                                    class="doc-btn download-btn"
+                                    type="button"
+                                    onclick="downloadDocument('${docRecord.id}')">
+
+                                    Download
+
+                                </button>
+
+
+                                <button
+                                    class="doc-btn delete-btn"
+                                    type="button"
+                                    onclick="deleteDocument('${docRecord.id}')">
+
+                                    Delete
+
+                                </button>
+
+
+                            </div>
+
+                        </td>
+
+                    </tr>
+
+                `;
+
+            }
+        ).join("");
+
+}
+
+
+/* =========================================
+   SEARCH
+========================================= */
+
+function searchDocuments(){
+
+    const firstSearch =
+        window.document.getElementById(
+            "documentSearch"
+        );
+
+
+    const secondSearch =
+        window.document.getElementById(
+            "topSearch"
+        );
+
+
+    const firstValue =
+        firstSearch
+        ?
+        firstSearch.value
+        :
+        "";
+
+
+    const secondValue =
+        secondSearch
+        ?
+        secondSearch.value
+        :
+        "";
+
+
+    const search =
+        (
+            firstValue ||
+            secondValue ||
+            ""
+        )
+        .toLowerCase()
+        .trim();
+
+
+    if(!search){
+
+        renderDocuments(
+            allDocuments
+        );
+
+        return;
+    }
+
+
+    const filtered =
+        allDocuments.filter(
+            docRecord => {
+
+                return (
+
+                    String(
+                        docRecord.file_name || ""
+                    )
+                    .toLowerCase()
+                    .includes(search)
+
+                    ||
+
+                    String(
+                        docRecord.case_number || ""
+                    )
+                    .toLowerCase()
+                    .includes(search)
+
+                    ||
+
+                    String(
+                        docRecord.case_title || ""
+                    )
+                    .toLowerCase()
+                    .includes(search)
+
+                    ||
+
+                    String(
+                        docRecord.client_name || ""
+                    )
+                    .toLowerCase()
+                    .includes(search)
+
+                    ||
+
+                    String(
+                        docRecord.document_type || ""
+                    )
+                    .toLowerCase()
+                    .includes(search)
+
+                );
+
+            }
+        );
+
+
+    renderDocuments(
+        filtered
+    );
+
+}
+
+
+/* =========================================
+   UPLOAD BOX
+========================================= */
+
+function toggleUpload(){
+
+    const box =
+        window.document.getElementById(
+            "uploadBox"
+        );
+
+
+    if(!box){
+        return;
+    }
+
+
+    if(
+        box.style.display ===
+        "block"
+    ){
+
+        box.style.display =
+            "none";
+
+    }else{
+
+        box.style.display =
+            "block";
+
+
+        box.scrollIntoView({
+            behavior:"smooth",
+            block:"start"
+        });
+
+    }
+
+}
+
+
+/* =========================================
+   SELECTED FILE
+========================================= */
+
+function showSelectedFile(){
+
+    const input =
+        window.document.getElementById(
+            "documentFile"
+        );
+
+
+    const output =
+        window.document.getElementById(
+            "selectedFile"
+        );
+
+
+    if(
+        !input ||
+        !output
+    ){
+        return;
+    }
+
+
+    if(!input.files.length){
+
+        output.textContent =
+            "No file selected";
+
+        return;
+    }
+
+
+    const file =
+        input.files[0];
+
+
+    output.textContent =
+        file.name +
+        " (" +
+        formatFileSize(file.size) +
+        ")";
+
+}
+
+
+/* =========================================
+   UPLOAD DOCUMENT
+========================================= */
+
+async function uploadDocument(){
+
+    const status =
+        window.document.getElementById(
+            "uploadStatus"
+        );
+
+
+    const button =
+        window.document.getElementById(
+            "uploadButton"
+        );
+
+
+    const fileInput =
+        window.document.getElementById(
+            "documentFile"
+        );
+
+
+    const caseNumber =
+        window.document.getElementById(
+            "caseNumber"
+        ).value.trim();
+
+
+    const caseTitle =
+        window.document.getElementById(
+            "caseTitle"
+        ).value.trim();
+
+
+    const clientName =
+        window.document.getElementById(
+            "clientName"
+        ).value.trim();
+
+
+    const documentType =
+        window.document.getElementById(
+            "documentType"
+        ).value;
+
+
+    if(!fileInput.files.length){
+
+        status.textContent =
+            "Please select a file.";
+
+        status.className =
+            "status-message error-message";
+
+        return;
+    }
+
+
+    const file =
+        fileInput.files[0];
+
+
+    if(
+        file.size >
+        20 * 1024 * 1024
+    ){
+
+        status.textContent =
+            "File is too large. Maximum size is 20 MB.";
+
+        status.className =
+            "status-message error-message";
+
+        return;
+    }
+
+
+    status.textContent =
+        "Uploading...";
+
+
+    status.className =
+        "status-message";
+
+
+    if(button){
+
+        button.disabled =
+            true;
+
+        button.textContent =
+            "Uploading...";
+
+    }
+
+
+    try{
+
+        const user =
+            await getDocumentsUser();
+
+
+        if(!user){
+
+            throw new Error(
+                "Your session has expired. Please login again."
+            );
+
+        }
+
+
+        const safeFileName =
+            file.name
+                .replace(
+                    /[^a-zA-Z0-9._-]/g,
+                    "_"
+                );
+
+
+        const uniqueFileName =
+            Date.now() +
+            "_" +
+            safeFileName;
+
+
+        /*
+            Private Storage structure:
+
+            user-id/
+                unique-file-name
+        */
+
+        const filePath =
+            user.id +
+            "/" +
+            uniqueFileName;
+
+
+        /* =========================
+           STORAGE UPLOAD
+        ========================= */
+
+        const {
+            error: storageError
+        } =
+        await documentsSupabase.storage
+            .from("documents")
+            .upload(
+                filePath,
+                file,
+                {
+                    cacheControl:"3600",
+                    upsert:false
+                }
+            );
+
+
+        if(storageError){
+
+            throw storageError;
+        }
+
+
+        /* =========================
+           DATABASE INSERT
+        ========================= */
+
+        const {
+            error: databaseError
+        } =
+        await documentsSupabase
+            .from("documents")
+            .insert({
+
+                file_name:
+                    file.name,
+
+                file_path:
+                    filePath,
+
+                case_number:
+                    caseNumber ||
+                    null,
+
+                case_title:
+                    caseTitle ||
+                    null,
+
+                client_name:
+                    clientName ||
+                    null,
+
+                document_type:
+                    documentType ||
+                    getFileType(
+                        file.name
+                    ),
+
+                file_size:
+                    file.size,
+
+                uploaded_by:
+                    user.id
+
+            });
+
+
+        if(databaseError){
+
+            /*
+                Database insert failed,
+                so remove the uploaded
+                storage file.
+            */
+
+            await documentsSupabase.storage
+                .from("documents")
+                .remove([
+                    filePath
+                ]);
+
+
+            throw databaseError;
+        }
+
+
+        status.textContent =
+            "Document uploaded successfully.";
+
+        status.className =
+            "status-message success-message";
+
+
+        /* Clear form */
+
+        window.document.getElementById(
+            "caseNumber"
+        ).value = "";
+
+
+        window.document.getElementById(
+            "caseTitle"
+        ).value = "";
+
+
+        window.document.getElementById(
+            "clientName"
+        ).value = "";
+
+
+        window.document.getElementById(
+            "documentType"
+        ).value = "";
+
+
+        fileInput.value = "";
+
+
+        window.document.getElementById(
+            "selectedFile"
+        ).textContent =
+            "No file selected";
+
+
+        await loadDocuments();
+
+
+    }catch(error){
+
+        console.error(
+            "Upload error:",
+            error
+        );
+
+
+        status.textContent =
+            "Upload failed: " +
+            (
+                error.message ||
+                "Unknown error"
+            );
+
+
+        status.className =
+            "status-message error-message";
+
+    }finally{
+
+        if(button){
+
+            button.disabled =
+                false;
+
+            button.textContent =
+                "Upload";
+
+        }
+
+    }
+
+}
+
+
+/* =========================================
+   VIEW DOCUMENT
+========================================= */
+
+async function viewDocument(id){
+
+    const docRecord =
+        allDocuments.find(
+            item =>
+                item.id === id
+        );
+
+
+    if(!docRecord){
+
+        alert(
+            "Document not found."
+        );
+
+        return;
+    }
+
+
+    try{
+
+        const {
+            data,
+            error
+        } =
+        await documentsSupabase.storage
+            .from("documents")
+            .createSignedUrl(
+                docRecord.file_path,
+                300
+            );
+
+
+        if(error){
+            throw error;
+        }
+
+
+        if(
+            data &&
+            data.signedUrl
+        ){
+
+            window.open(
+                data.signedUrl,
+                "_blank"
+            );
+
+        }else{
+
+            throw new Error(
+                "Signed URL was not created."
+            );
+
+        }
+
+
+    }catch(error){
+
+        console.error(
+            "View error:",
+            error
+        );
+
+
+        alert(
+            "Unable to open this document.\n\n" +
+            (
+                error.message ||
+                "Please try again."
+            )
+        );
+
+    }
+
+}
+
+
+/* =========================================
+   DOWNLOAD DOCUMENT
+========================================= */
+
+async function downloadDocument(id){
+
+    const docRecord =
+        allDocuments.find(
+            item =>
+                item.id === id
+        );
+
+
+    if(!docRecord){
+
+        alert(
+            "Document not found."
+        );
+
+        return;
+    }
+
+
+    try{
+
+        const {
+            data,
+            error
+        } =
+        await documentsSupabase.storage
+            .from("documents")
+            .createSignedUrl(
+                docRecord.file_path,
+                300
+            );
+
+
+        if(error){
+            throw error;
+        }
+
+
+        if(
+            !data ||
+            !data.signedUrl
+        ){
+
+            throw new Error(
+                "Signed URL was not created."
+            );
+
+        }
+
+
+        const response =
+            await fetch(
+                data.signedUrl
+            );
+
+
+        if(!response.ok){
+
+            throw new Error(
+                "Unable to download file."
+            );
+
+        }
+
+
+        const blob =
+            await response.blob();
+
+
+        const blobUrl =
+            window.URL.createObjectURL(
+                blob
+            );
+
+
+        const link =
+            window.document.createElement(
+                "a"
+            );
+
+
+        link.href =
+            blobUrl;
+
+
+        link.download =
+            docRecord.file_name ||
+            "document";
+
+
+        window.document.body.appendChild(
+            link
+        );
+
+
+        link.click();
+
+
+        link.remove();
+
+
+        window.URL.revokeObjectURL(
+            blobUrl
+        );
+
+
+    }catch(error){
+
+        console.error(
+            "Download error:",
+            error
+        );
+
+
+        alert(
+            "Unable to download this document.\n\n" +
+            (
+                error.message ||
+                "Please try again."
+            )
+        );
+
+    }
+
+}
+
+
+/* =========================================
+   DELETE DOCUMENT
+========================================= */
+
+async function deleteDocument(id){
+
+    const docRecord =
+        allDocuments.find(
+            item =>
+                item.id === id
+        );
+
+
+    if(!docRecord){
+
+        alert(
+            "Document not found."
+        );
+
+        return;
+    }
+
+
+    const confirmed =
+        window.confirm(
+            "Are you sure you want to delete " +
+            docRecord.file_name +
+            "?"
+        );
+
+
+    if(!confirmed){
+        return;
+    }
+
+
+    try{
+
+        /* =========================
+           DELETE STORAGE FILE
+        ========================= */
+
+        const {
+            error: storageError
+        } =
+        await documentsSupabase.storage
+            .from("documents")
+            .remove([
+                docRecord.file_path
+            ]);
+
+
+        if(storageError){
+            throw storageError;
+        }
+
+
+        /* =========================
+           DELETE DATABASE RECORD
+        ========================= */
+
+        const {
+            error: databaseError
+        } =
+        await documentsSupabase
+            .from("documents")
+            .delete()
+            .eq(
+                "id",
+                id
+            );
+
+
+        if(databaseError){
+
+            throw databaseError;
+        }
+
+
+        await loadDocuments();
+
+
+        alert(
+            "Document deleted successfully."
+        );
+
+
+    }catch(error){
+
+        console.error(
+            "Delete error:",
+            error
+        );
+
+
+        alert(
+            "Delete failed.\n\n" +
+            (
+                error.message ||
+                "Please check Storage DELETE policy."
+            )
+        );
+
+    }
+
+}
+
+
+/* =========================================
+   FILE TYPE
+========================================= */
+
+function getFileType(fileName){
+
+    const parts =
+        String(fileName)
+            .split(".");
+
+
+    if(parts.length < 2){
+        return "FILE";
+    }
+
+
+    return parts[
+        parts.length - 1
+    ].toUpperCase();
+
+}
+
+
+/* =========================================
+   FILE SIZE
+========================================= */
+
+function formatFileSize(bytes){
+
+    if(!bytes){
+        return "0 KB";
+    }
+
+
+    const mb =
+        bytes /
+        (1024 * 1024);
+
+
+    if(mb >= 1){
+
+        return (
+            mb.toFixed(2) +
+            " MB"
+        );
+
+    }
+
+
+    return (
+        bytes /
+        1024
+    ).toFixed(1) +
+    " KB";
+
+}
+
+
+/* =========================================
+   HTML ESCAPE
+========================================= */
+
+function escapeHTML(value){
+
+    return String(value)
+
+        .replace(
+            /&/g,
+            "&amp;"
+        )
+
+        .replace(
+            /</g,
+            "&lt;"
+        )
+
+        .replace(
+            />/g,
+            "&gt;"
+        )
+
+        .replace(
+            /"/g,
+            "&quot;"
+        )
+
+        .replace(
+            /'/g,
+            "&#039;"
+        );
+
+}
+
+
+/* =========================================
+   START DOCUMENT PAGE
+========================================= */
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function(){
+
+        loadDocumentProfile();
+
+        loadDocuments();
+
+    }
+);
+
+</script></body>
+</html>

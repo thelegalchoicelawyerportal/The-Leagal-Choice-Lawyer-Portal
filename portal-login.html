@@ -1,0 +1,624 @@
+<!doctype html>
+
+<html lang="en"><head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1"><title>Portal Login | The Legal Choice</title>
+
+<link rel="stylesheet" href="portal.css">
+
+<style>
+    .login-message {
+        display: none;
+        margin-top: 15px;
+        padding: 12px 14px;
+        border-radius: 8px;
+        font-size: 14px;
+        line-height: 1.5;
+    }
+
+    .login-message.error {
+        display: block;
+        background: rgba(180, 40, 40, 0.12);
+        border: 1px solid rgba(180, 40, 40, 0.35);
+        color: #b52b2b;
+    }
+
+    .login-message.success {
+        display: block;
+        background: rgba(30, 130, 80, 0.12);
+        border: 1px solid rgba(30, 130, 80, 0.35);
+        color: #23784d;
+    }
+
+    .btn:disabled {
+        opacity: 0.65;
+        cursor: not-allowed;
+    }
+
+    .forgot-link {
+        cursor: pointer;
+        background: none;
+        border: none;
+        padding: 0;
+        font: inherit;
+        color: inherit;
+        text-decoration: underline;
+    }
+</style>
+
+</head><body><div class="login-wrap">
+
+    <!-- LEFT SIDE -->
+    <section class="login-visual">
+
+        <div>
+
+            <div class="muted"
+                style="color:#d7b65d;letter-spacing:2px;text-transform:uppercase">
+                The Legal Choice Portal
+            </div>
+
+            <h1>
+                Your Legal Matters.<br>
+                Our Priority.
+            </h1>
+
+            <p>
+                Securely manage cases, clients, appointments, documents
+                and professional legal services from one responsive portal.
+            </p>
+
+            <a class="btn gold" href="index.html">
+                ← Back to Website
+            </a>
+
+        </div>
+
+    </section>
+
+
+    <!-- RIGHT SIDE -->
+    <section class="login-card">
+
+        <div class="auth">
+
+            <!-- BRAND -->
+            <div class="auth-brand">
+
+                <img src="assets/logo.png" alt="The Legal Choice Logo">
+
+                <h1>The Legal Choice</h1>
+
+                <p>
+                    JUSTICE · TRUST · SUPPORT
+                </p>
+
+            </div>
+
+
+            <!-- LOGIN FORM -->
+            <form class="authbox" id="loginForm">
+
+                <h2>Welcome Back</h2>
+
+                <p>
+                    Login to your portal account to continue.
+                </p>
+
+
+                <!-- EMAIL -->
+                <div class="field">
+
+                    <label for="email">
+                        Email
+                    </label>
+
+                    <input
+                        id="email"
+                        name="email"
+                        required
+                        type="email"
+                        autocomplete="email"
+                        placeholder="Enter your email"
+                    >
+
+                </div>
+
+
+                <!-- PASSWORD -->
+                <div class="field" style="margin-top:13px">
+
+                    <label for="password">
+                        Password
+                    </label>
+
+                    <input
+                        id="password"
+                        name="password"
+                        required
+                        type="password"
+                        autocomplete="current-password"
+                        placeholder="Enter your password"
+                    >
+
+                </div>
+
+
+                <!-- REMEMBER / FORGOT -->
+                <div class="remember">
+
+                    <label>
+                        <input
+                            id="rememberMe"
+                            type="checkbox"
+                        >
+                        Remember me
+                    </label>
+
+                    <button
+                        type="button"
+                        class="forgot-link"
+                        id="forgotPassword"
+                    >
+                        Forgot password?
+                    </button>
+
+                </div>
+
+
+                <!-- MESSAGE -->
+                <div
+                    id="loginMessage"
+                    class="login-message"
+                    role="alert"
+                ></div>
+
+
+                <!-- LOGIN BUTTON -->
+                <button
+                    class="btn"
+                    id="loginButton"
+                    type="submit"
+                >
+                    Login
+                </button>
+
+
+                <!-- REGISTER -->
+                <div class="authfoot">
+
+                    Don't have an account?
+
+                    <a href="portal-register.html">
+                        Register
+                    </a>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </section>
+
+</div>
+
+
+<!-- SUPABASE -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+
+<script>
+
+    /* =========================================================
+       THE LEGAL CHOICE
+       SUPABASE CONFIGURATION
+    ========================================================= */
+
+    const SUPABASE_URL =
+        "https://ibzxisfangonytpknthu.supabase.co";
+
+    const SUPABASE_ANON_KEY =
+        "sb_publishable_S0YKbX1MIaBB9HxL5KoEAw_X0mymq8q";
+
+
+    const supabaseClient =
+        window.supabase.createClient(
+            SUPABASE_URL,
+            SUPABASE_ANON_KEY
+        );
+
+
+    /* =========================================================
+       ELEMENTS
+    ========================================================= */
+
+    const loginForm =
+        document.getElementById("loginForm");
+
+    const loginButton =
+        document.getElementById("loginButton");
+
+    const loginMessage =
+        document.getElementById("loginMessage");
+
+    const emailInput =
+        document.getElementById("email");
+
+    const passwordInput =
+        document.getElementById("password");
+
+    const rememberMe =
+        document.getElementById("rememberMe");
+
+    const forgotPassword =
+        document.getElementById("forgotPassword");
+
+
+    /* =========================================================
+       MESSAGE FUNCTION
+    ========================================================= */
+
+    function showMessage(message, type = "error") {
+
+        loginMessage.textContent = message;
+
+        loginMessage.className =
+            "login-message " + type;
+
+    }
+
+
+    function clearMessage() {
+
+        loginMessage.textContent = "";
+
+        loginMessage.className =
+            "login-message";
+
+    }
+
+
+    /* =========================================================
+       LOGIN
+    ========================================================= */
+
+    loginForm.addEventListener("submit", async function (e) {
+
+        e.preventDefault();
+
+        clearMessage();
+
+        const email =
+            emailInput.value.trim();
+
+        const password =
+            passwordInput.value;
+
+
+        if (!email || !password) {
+
+            showMessage(
+                "Please enter your email and password."
+            );
+
+            return;
+        }
+
+
+        loginButton.disabled = true;
+
+        loginButton.textContent =
+            "Logging in...";
+
+
+        try {
+
+            const { data, error } =
+                await supabaseClient.auth.signInWithPassword({
+
+                    email: email,
+
+                    password: password
+
+                });
+
+
+            if (error) {
+
+                throw error;
+
+            }
+
+
+            if (!data.user) {
+
+                throw new Error(
+                    "Login failed. User account was not found."
+                );
+
+            }
+
+
+            /* ---------------------------------------------
+               CHECK ADMIN PROFILE
+            --------------------------------------------- */
+
+            const { data: profile, error: profileError } =
+                await supabaseClient
+                    .from("Profile")
+                    .select("id, email, role")
+                    .eq("id", data.user.id)
+                    .maybeSingle();
+
+
+            if (profileError) {
+
+                console.error(
+                    "Profile error:",
+                    profileError
+                );
+
+                await supabaseClient.auth.signOut();
+
+                throw new Error(
+                    "Unable to verify your account role."
+                );
+
+            }
+
+
+            if (
+                !profile ||
+                String(profile.role).toLowerCase() !== "admin"
+            ) {
+
+                await supabaseClient.auth.signOut();
+
+                showMessage(
+                    "Access denied. This account is not an administrator."
+                );
+
+                return;
+            }
+
+
+            /* ---------------------------------------------
+               REMEMBER ME
+            --------------------------------------------- */
+
+            if (rememberMe.checked) {
+
+                localStorage.setItem(
+                    "legalRememberMe",
+                    "1"
+                );
+
+            } else {
+
+                localStorage.removeItem(
+                    "legalRememberMe"
+                );
+
+            }
+
+
+            /* ---------------------------------------------
+               SUCCESS
+            --------------------------------------------- */
+
+            showMessage(
+                "Login successful. Opening Admin Dashboard...",
+                "success"
+            );
+
+
+            setTimeout(function () {
+
+                window.location.href =
+                    "dashboard.html";
+
+            }, 700);
+
+
+        } catch (error) {
+
+            console.error(
+                "Login error:",
+                error
+            );
+
+
+            let message =
+                "Login failed. Please check your email and password.";
+
+
+            if (
+                error.message &&
+                error.message.toLowerCase().includes("email not confirmed")
+            ) {
+
+                message =
+                    "Your email is not confirmed. Please confirm your email first.";
+
+            } else if (
+                error.message &&
+                error.message.toLowerCase().includes("invalid login credentials")
+            ) {
+
+                message =
+                    "Invalid email or password.";
+
+            } else if (
+                error.message
+            ) {
+
+                message =
+                    error.message;
+
+            }
+
+
+            showMessage(message);
+
+
+        } finally {
+
+            loginButton.disabled = false;
+
+            loginButton.textContent =
+                "Login";
+
+        }
+
+    });
+
+
+    /* =========================================================
+       FORGOT PASSWORD
+    ========================================================= */
+
+    forgotPassword.addEventListener(
+        "click",
+        async function () {
+
+            clearMessage();
+
+            const email =
+                emailInput.value.trim();
+
+
+            if (!email) {
+
+                showMessage(
+                    "Please enter your email first, then click Forgot password."
+                );
+
+                emailInput.focus();
+
+                return;
+            }
+
+
+            try {
+
+                forgotPassword.disabled = true;
+
+
+                const { error } =
+                    await supabaseClient.auth.resetPasswordForEmail(
+                        email,
+                        {
+                            redirectTo:
+                                "https://haroonibnrasheedonlinequranacadmey.github.io/The-Legal-Choice-Lawyer-Portal/reset-password.html"
+                        }
+                    );
+
+
+                if (error) {
+
+                    throw error;
+
+                }
+
+
+                showMessage(
+                    "Password reset email has been sent. Please check your inbox.",
+                    "success"
+                );
+
+
+            } catch (error) {
+
+                console.error(
+                    "Password reset error:",
+                    error
+                );
+
+
+                let message =
+                    error.message ||
+                    "Unable to send password reset email.";
+
+
+                if (
+                    message.toLowerCase().includes("rate limit")
+                ) {
+
+                    message =
+                        "Password reset email limit has been reached. Please wait before requesting another email.";
+
+                }
+
+
+                showMessage(message);
+
+
+            } finally {
+
+                forgotPassword.disabled = false;
+
+            }
+
+        }
+    );
+
+
+    /* =========================================================
+       IF USER IS ALREADY LOGGED IN
+    ========================================================= */
+
+    async function checkExistingSession() {
+
+        try {
+
+            const {
+                data: {
+                    session
+                }
+            } =
+                await supabaseClient.auth.getSession();
+
+
+            if (!session || !session.user) {
+
+                return;
+
+            }
+
+
+            const { data: profile } =
+                await supabaseClient
+                    .from("Profile")
+                    .select("role")
+                    .eq("id", session.user.id)
+                    .maybeSingle();
+
+
+            if (
+                profile &&
+                String(profile.role).toLowerCase() === "admin"
+            ) {
+
+                window.location.href =
+                    "dashboard.html";
+
+            }
+
+        } catch (error) {
+
+            console.error(
+                "Session check error:",
+                error
+            );
+
+        }
+
+    }
+
+
+    checkExistingSession();
+
+</script>
+
+</body></html>

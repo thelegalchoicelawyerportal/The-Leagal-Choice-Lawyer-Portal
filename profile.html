@@ -1,0 +1,1427 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>My Profile | The Legal Choice Portal</title>
+<link rel="stylesheet" href="portal.css">
+
+<style>
+.profile-edit-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:18px;
+}
+
+.profile-edit-grid .full{
+    grid-column:1/-1;
+}
+
+.form-group{
+    display:flex;
+    flex-direction:column;
+    gap:7px;
+}
+
+.form-group label{
+    font-weight:600;
+}
+
+.form-group input,
+.form-group textarea,
+.form-group select{
+    width:100%;
+    padding:12px 14px;
+    border:1px solid #ddd;
+    border-radius:8px;
+    font-size:15px;
+    outline:none;
+    background:#fff;
+}
+
+.form-group textarea{
+    min-height:120px;
+    resize:vertical;
+}
+
+.form-group input:focus,
+.form-group textarea:focus,
+.form-group select:focus{
+    border-color:#b8954a;
+}
+
+.profile-photo-area{
+    display:flex;
+    align-items:center;
+    gap:20px;
+    margin-bottom:25px;
+    padding-bottom:20px;
+    border-bottom:1px solid #eee;
+}
+
+.profile-photo-large{
+    width:110px;
+    height:110px;
+    border-radius:50%;
+    object-fit:cover;
+    border:4px solid #eee;
+}
+
+.photo-buttons{
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+}
+
+.status-message{
+    margin-top:15px;
+    padding:12px 15px;
+    border-radius:7px;
+    display:none;
+}
+
+.status-success{
+    background:#e8f7ed;
+    color:#19733a;
+}
+
+.status-error{
+    background:#fdecec;
+    color:#a32222;
+}
+
+@media(max-width:700px){
+    .profile-edit-grid{
+        grid-template-columns:1fr;
+    }
+
+    .profile-edit-grid .full{
+        grid-column:auto;
+    }
+
+    .profile-photo-area{
+        align-items:flex-start;
+    }
+}
+</style>
+</head>
+
+<body onload="loadProfile()">
+
+<div class="portal">
+
+<aside class="side">
+
+<a class="portal-brand" href="dashboard.html">
+<img src="assets/logo.png" alt="Logo">
+
+<div>
+<strong>The Legal Choice</strong>
+<small>JUSTICE · TRUST · SUPPORT</small>
+</div>
+</a>
+
+<div class="user-mini">
+
+<img
+id="sidebarPhoto"
+class="avatar"
+src="assets/profile.jpg"
+alt="Profile">
+
+<div>
+<strong id="sidebarName">
+Adv. Safi ur Rehman Mianwala
+</strong>
+
+<span>● Online · Lawyer</span>
+</div>
+
+</div>
+
+<div class="navtitle">Main Menu</div>
+
+<a href="dashboard.html">
+<i class="ico">▣</i>
+<span>Dashboard</span>
+</a>
+
+<a href="cases.html">
+<i class="ico">▤</i>
+<span>My Cases</span>
+</a>
+
+<a href="clients.html">
+<i class="ico">♙</i>
+<span>Clients</span>
+</a>
+
+<a href="appointments.html">
+<i class="ico">◫</i>
+<span>Appointments</span>
+</a>
+
+<a href="messages.html">
+<i class="ico">✉</i>
+<span>Messages</span>
+</a>
+
+<a href="documents.html">
+<i class="ico">▧</i>
+<span>Documents</span>
+</a>
+
+<a href="videos-admin.html">
+<i class="ico">▶</i>
+<span>Videos</span>
+</a>
+
+<a class="active" href="profile.html">
+<i class="ico">◉</i>
+<span>Profile</span>
+</a>
+
+<a href="settings.html">
+<i class="ico">⚙</i>
+<span>Settings</span>
+</a>
+
+<div class="navtitle">Account</div>
+
+<a href="index.html">
+<i class="ico">⌂</i>
+<span>Public Website</span>
+</a>
+
+<a href="#" onclick="portalLogout();return false">
+<i class="ico">↪</i>
+<span>Logout</span>
+</a>
+
+</aside>
+
+<main class="main">
+
+<header class="topbar">
+
+<div class="search">
+⌕
+<input placeholder="Search cases, clients, appointments...">
+</div>
+
+<div class="top-actions">
+
+<span class="bell">
+♧
+<b>3</b>
+</span>
+
+<a class="top-user" href="profile.html">
+
+<img
+id="topPhoto"
+src="assets/profile.jpg"
+alt="Profile">
+
+<div>
+
+<strong id="topName">
+Adv. Safi ur Rehman Mianwala
+</strong>
+
+<br>
+
+<span class="muted">
+Lawyer
+</span>
+
+</div>
+
+</a>
+
+</div>
+
+</header>
+
+<div class="content">
+
+<div class="heading">
+
+<div>
+
+<h1>My Profile</h1>
+
+<p class="muted">
+Manage your professional information shown to clients.
+</p>
+
+</div>
+
+<button
+type="button"
+class="btn gold"
+onclick="document.getElementById('profileForm').scrollIntoView({behavior:'smooth'})">
+
+Edit Profile
+
+</button>
+
+</div>
+
+<section class="panel">
+
+<div class="panelbody">
+
+<form id="profileForm" onsubmit="saveProfile(event)">
+
+<div class="profile-photo-area">
+
+<img
+id="profilePhoto"
+class="profile-photo-large"
+src="assets/profile.jpg"
+alt="Profile Photo">
+
+<div class="photo-buttons">
+
+<strong>Profile Photo</strong>
+
+<input
+type="file"
+id="photoInput"
+accept="image/*"
+onchange="previewPhoto(event)">
+
+<small class="muted">
+Select a profile photo. JPG, PNG or WEBP.
+</small>
+
+</div>
+
+</div>
+
+<div class="profile-edit-grid">
+
+<div class="form-group">
+
+<label for="fullName">
+Full Name
+</label>
+
+<input
+type="text"
+id="fullName"
+placeholder="Enter your full name"
+required>
+
+</div>
+
+<div class="form-group">
+
+<label for="email">
+Email
+</label>
+
+<input
+type="email"
+id="email"
+placeholder="Enter email address"
+required>
+
+</div>
+
+<div class="form-group">
+
+<label for="phone">
+Phone
+</label>
+
+<input
+type="text"
+id="phone"
+placeholder="+92 315 5729250">
+
+</div>
+
+<div class="form-group">
+
+<label for="city">
+City
+</label>
+
+<input
+type="text"
+id="city"
+placeholder="Pindi Gheb / Rawalpindi / Abbottabad">
+
+</div>
+
+<div class="form-group">
+
+<label for="specialization">
+Specialization
+</label>
+
+<input
+type="text"
+id="specialization"
+placeholder="Civil, Criminal, Family & Property Law">
+
+</div>
+
+<div class="form-group">
+
+<label for="experience">
+Experience
+</label>
+
+<input
+type="text"
+id="experience"
+placeholder="10+ Years">
+
+</div>
+
+<div class="form-group full">
+
+<label for="bio">
+About Me
+</label>
+
+<textarea
+id="bio"
+placeholder="Write your professional biography..."></textarea>
+
+</div>
+
+<div class="form-group full">
+
+<label for="skills">
+Skills / Practice Areas
+</label>
+
+<input
+type="text"
+id="skills"
+placeholder="Family Law, Criminal Law, Civil Litigation, Legal Advice">
+
+<small class="muted">
+Separate each skill with a comma.
+</small>
+
+</div>
+
+</div>
+
+<div id="statusMessage" class="status-message"></div>
+
+<div style="margin-top:25px;display:flex;gap:10px;flex-wrap:wrap">
+
+<button
+type="submit"
+id="saveButton"
+class="btn gold">
+
+Save Profile
+
+</button>
+
+<button
+type="button"
+class="btn"
+onclick="loadProfile()">
+
+Reload
+
+</button>
+
+</div>
+
+</form>
+
+</div>
+
+</section>
+<!-- =========================
+     PROFILE PREVIEW
+========================= -->
+
+<section class="panel" style="margin-top:20px">
+
+<div class="panelbody">
+
+<h2 style="margin-top:0">
+Profile Preview
+</h2>
+
+<div class="profilebox">
+
+<img
+id="previewPhoto"
+class="profilephoto"
+src="assets/profile.jpg"
+alt="Lawyer profile">
+
+<div>
+
+<h2
+id="previewName"
+style="font:28px Georgia,serif;margin:5px 0">
+
+Adv. Safi ur Rehman Mianwala
+
+</h2>
+
+<p class="muted">
+Advocate & Legal Consultant
+</p>
+
+<div class="detailgrid">
+
+<div class="detail">
+
+<small>Email</small>
+
+<strong id="previewEmail">
+—
+</strong>
+
+</div>
+
+<div class="detail">
+
+<small>Phone</small>
+
+<strong id="previewPhone">
+—
+</strong>
+
+</div>
+
+<div class="detail">
+
+<small>Location</small>
+
+<strong id="previewCity">
+—
+</strong>
+
+</div>
+
+<div class="detail">
+
+<small>Experience</small>
+
+<strong id="previewExperience">
+—
+</strong>
+
+</div>
+
+</div>
+
+<h3 style="margin-top:20px">
+About Me
+</h3>
+
+<p
+id="previewBio"
+class="muted">
+—
+</p>
+
+<h3>
+Skills
+</h3>
+
+<div id="previewSkills">
+—
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+</div>
+
+</main>
+
+</div>
+
+
+<!-- =========================
+     MOBILE BAR
+========================= -->
+
+<div class="mobilebar">
+
+<a
+class="btn"
+href="dashboard.html">
+
+Dashboard
+
+</a>
+
+<a
+class="btn gold"
+href="#"
+onclick="portalLogout();return false">
+
+Logout
+
+</a>
+
+</div>
+
+
+<!-- =========================
+     SUPABASE
+========================= -->
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script src="portal.js"></script>
+
+<script>
+
+/* ==========================================
+   SUPABASE CONFIG
+========================================== */
+
+const SUPABASE_URL =
+"https://ibzxisfangonytpknthu.supabase.co";
+
+const SUPABASE_ANON_KEY =
+"sb_publishable_S0YKbX1MIaBB9HxL5KoEAw_X0mymq8q";
+
+const profileSupabase =
+window.supabase.createClient(
+SUPABASE_URL,
+SUPABASE_ANON_KEY
+);
+
+
+/* ==========================================
+   SHOW MESSAGE
+========================================== */
+
+function showMessage(message,type){
+
+const box =
+document.getElementById("statusMessage");
+
+box.textContent =
+message;
+
+box.className =
+"status-message " +
+(
+type === "success"
+? "status-success"
+: "status-error"
+);
+
+box.style.display =
+"block";
+
+}
+
+
+/* ==========================================
+   HIDE MESSAGE
+========================================== */
+
+function hideMessage(){
+
+document.getElementById(
+"statusMessage"
+).style.display = "none";
+
+}
+
+
+/* ==========================================
+   LOAD PROFILE
+========================================== */
+
+async function loadProfile(){
+
+hideMessage();
+
+try{
+
+const {
+data:sessionData,
+error:sessionError
+} =
+await profileSupabase.auth.getSession();
+
+
+if(
+sessionError ||
+!sessionData.session ||
+!sessionData.session.user
+){
+
+window.location.href =
+"portal-login.html";
+
+return;
+
+}
+
+
+const user =
+sessionData.session.user;
+
+
+/* Get profile from Supabase */
+
+const {
+data:profile,
+error
+} =
+await profileSupabase
+.from("Profile")
+.select("*")
+.eq("id",user.id)
+.maybeSingle();
+
+
+if(error){
+
+console.error(error);
+
+showMessage(
+"Profile load error: " +
+error.message,
+"error"
+);
+
+return;
+
+}
+
+
+/* ==================================
+   PUT PROFILE DATA INTO FORM
+================================== */
+
+if(profile){
+
+document.getElementById(
+"fullName"
+).value =
+profile.full_name ||
+"Adv. Safi ur Rehman Mianwala";
+
+
+document.getElementById(
+"email"
+).value =
+profile.email ||
+user.email ||
+"";
+
+
+document.getElementById(
+"phone"
+).value =
+profile.phone ||
+"+92 315 5729250";
+
+
+document.getElementById(
+"city"
+).value =
+profile.city ||
+"Pakistan";
+
+
+document.getElementById(
+"specialization"
+).value =
+profile.specialization ||
+"Civil, Criminal, Family & Property Law";
+
+
+document.getElementById(
+"experience"
+).value =
+profile.experience ||
+"10+ Years";
+
+
+document.getElementById(
+"bio"
+).value =
+profile.bio ||
+"Experienced legal professional providing practical guidance across civil, family, criminal, property and business matters.";
+
+
+document.getElementById(
+"skills"
+).value =
+profile.specialization ||
+"Family Law, Criminal Law, Civil Litigation, Legal Advice";
+
+
+if(profile.profile_image){
+
+setPhoto(
+profile.profile_image
+);
+
+}
+
+}else{
+
+/* Default information */
+
+document.getElementById(
+"fullName"
+).value =
+"Adv. Safi ur Rehman Mianwala";
+
+
+document.getElementById(
+"email"
+).value =
+user.email || "";
+
+
+document.getElementById(
+"phone"
+).value =
+"+92 315 5729250";
+
+
+document.getElementById(
+"city"
+).value =
+"Pakistan";
+
+
+document.getElementById(
+"specialization"
+).value =
+"Civil, Criminal, Family & Property Law";
+
+
+document.getElementById(
+"experience"
+).value =
+"10+ Years";
+
+
+document.getElementById(
+"bio"
+).value =
+"Experienced legal professional providing practical guidance across civil, family, criminal, property and business matters.";
+
+
+document.getElementById(
+"skills"
+).value =
+"Family Law, Criminal Law, Civil Litigation, Legal Advice";
+
+}
+
+
+updatePreview();
+
+
+}catch(error){
+
+console.error(error);
+
+showMessage(
+"Something went wrong while loading the profile.",
+"error"
+);
+
+}
+
+}
+
+
+/* ==========================================
+   SAVE PROFILE
+========================================== */
+
+async function saveProfile(event){
+
+event.preventDefault();
+
+hideMessage();
+
+
+const button =
+document.getElementById(
+"saveButton"
+);
+
+button.disabled =
+true;
+
+button.textContent =
+"Saving...";
+
+
+try{
+
+const {
+data:sessionData,
+error:sessionError
+} =
+await profileSupabase.auth.getSession();
+
+
+if(
+sessionError ||
+!sessionData.session ||
+!sessionData.session.user
+){
+
+window.location.href =
+"portal-login.html";
+
+return;
+
+}
+
+
+const user =
+sessionData.session.user;
+
+
+/* ==================================
+   GET FORM VALUES
+================================== */
+
+const fullName =
+document.getElementById(
+"fullName"
+).value.trim();
+
+
+const email =
+document.getElementById(
+"email"
+).value.trim();
+
+
+const phone =
+document.getElementById(
+"phone"
+).value.trim();
+
+
+const city =
+document.getElementById(
+"city"
+).value.trim();
+
+
+const specialization =
+document.getElementById(
+"specialization"
+).value.trim();
+
+
+const experience =
+document.getElementById(
+"experience"
+).value.trim();
+
+
+const bio =
+document.getElementById(
+"bio"
+).value.trim();
+
+
+const skills =
+document.getElementById(
+"skills"
+).value.trim();
+
+
+if(!fullName){
+
+showMessage(
+"Please enter your full name.",
+"error"
+);
+
+return;
+
+}
+
+
+/* ==================================
+   PROFILE IMAGE
+================================== */
+
+let profileImage =
+document.getElementById(
+"profilePhoto"
+).src;
+
+
+if(
+!profileImage ||
+profileImage.includes(
+"unsplash.com"
+)
+){
+
+profileImage =
+null;
+
+}
+
+
+/* ==================================
+   PROFILE DATA
+================================== */
+
+const profileData = {
+
+id:user.id,
+
+full_name:
+fullName,
+
+email:
+email,
+
+phone:
+phone,
+
+city:
+city,
+
+specialization:
+specialization ||
+skills,
+
+experience:
+experience,
+
+profile_image:
+profileImage,
+
+bio:
+bio
+
+};
+
+
+/* ==================================
+   SAVE TO SUPABASE
+================================== */
+
+const {
+error
+} =
+await profileSupabase
+.from("Profile")
+.upsert(
+profileData,
+{
+onConflict:"id"
+}
+);
+
+
+if(error){
+
+console.error(error);
+
+showMessage(
+"Profile save failed: " +
+error.message,
+"error"
+);
+
+return;
+
+}
+
+
+/* ==================================
+   UPDATE AUTH EMAIL
+================================== */
+
+if(
+email &&
+email.toLowerCase() !==
+String(
+user.email || ""
+).toLowerCase()
+){
+
+const {
+error:emailError
+} =
+await profileSupabase.auth.updateUser({
+email:email
+});
+
+
+if(emailError){
+
+console.warn(
+"Email update warning:",
+emailError
+);
+
+}
+
+}
+
+
+updatePreview();
+
+
+showMessage(
+"Profile saved successfully.",
+"success"
+);
+
+
+}catch(error){
+
+console.error(error);
+
+showMessage(
+"Something went wrong while saving the profile.",
+"error"
+);
+
+
+}finally{
+
+button.disabled =
+false;
+
+button.textContent =
+"Save Profile";
+
+}
+
+}
+  <!-- ==========================================
+     PHOTO PREVIEW
+========================================== -->
+
+<script>
+
+function previewPhoto(event){
+
+    const file =
+        event.target.files[0];
+
+    if(!file){
+        return;
+    }
+
+
+    if(!file.type.startsWith("image/")){
+
+        showMessage(
+            "Please select an image file.",
+            "error"
+        );
+
+        return;
+
+    }
+
+
+    const reader =
+        new FileReader();
+
+
+    reader.onload = function(e){
+
+        setPhoto(
+            e.target.result
+        );
+
+    };
+
+
+    reader.readAsDataURL(file);
+
+}
+
+
+/* ==========================================
+   SET PHOTO
+========================================== */
+
+function setPhoto(src){
+
+    document.getElementById(
+        "profilePhoto"
+    ).src = src;
+
+
+    document.getElementById(
+        "previewPhoto"
+    ).src = src;
+
+
+    document.getElementById(
+        "sidebarPhoto"
+    ).src = src;
+
+
+    document.getElementById(
+        "topPhoto"
+    ).src = src;
+
+}
+
+
+/* ==========================================
+   UPDATE PROFILE PREVIEW
+========================================== */
+
+function updatePreview(){
+
+    const name =
+        document.getElementById(
+            "fullName"
+        ).value ||
+        "Adv. Safi ur Rehman Mianwala";
+
+
+    const email =
+        document.getElementById(
+            "email"
+        ).value ||
+        "—";
+
+
+    const phone =
+        document.getElementById(
+            "phone"
+        ).value ||
+        "—";
+
+
+    const city =
+        document.getElementById(
+            "city"
+        ).value ||
+        "—";
+
+
+    const experience =
+        document.getElementById(
+            "experience"
+        ).value ||
+        "—";
+
+
+    const bio =
+        document.getElementById(
+            "bio"
+        ).value ||
+        "—";
+
+
+    const skills =
+        document.getElementById(
+            "skills"
+        ).value ||
+        "—";
+
+
+    /* Preview information */
+
+    document.getElementById(
+        "previewName"
+    ).textContent =
+        name;
+
+
+    document.getElementById(
+        "previewEmail"
+    ).textContent =
+        email;
+
+
+    document.getElementById(
+        "previewPhone"
+    ).textContent =
+        phone;
+
+
+    document.getElementById(
+        "previewCity"
+    ).textContent =
+        city;
+
+
+    document.getElementById(
+        "previewExperience"
+    ).textContent =
+        experience;
+
+
+    document.getElementById(
+        "previewBio"
+    ).textContent =
+        bio;
+
+
+    /* Sidebar and topbar */
+
+    document.getElementById(
+        "sidebarName"
+    ).textContent =
+        name;
+
+
+    document.getElementById(
+        "topName"
+    ).textContent =
+        name;
+
+
+    /* ==================================
+       SKILLS
+    ================================== */
+
+    const skillsBox =
+        document.getElementById(
+            "previewSkills"
+        );
+
+
+    skillsBox.innerHTML = "";
+
+
+    if(skills === "—"){
+
+        skillsBox.textContent =
+            "—";
+
+        return;
+
+    }
+
+
+    const skillList =
+        skills
+        .split(",")
+        .map(
+            skill => skill.trim()
+        )
+        .filter(Boolean);
+
+
+    skillList.forEach(
+        function(skill,index){
+
+            const span =
+                document.createElement(
+                    "span"
+                );
+
+
+            span.className =
+                "badge " +
+                (
+                    index % 4 === 0
+                    ? "blue"
+                    : index % 4 === 1
+                    ? "purple"
+                    : index % 4 === 2
+                    ? "green"
+                    : "orange"
+                );
+
+
+            span.textContent =
+                skill;
+
+
+            skillsBox.appendChild(
+                span
+            );
+
+
+            skillsBox.appendChild(
+                document.createTextNode(" ")
+            );
+
+        }
+    );
+
+}
+
+
+/* ==========================================
+   LIVE PREVIEW
+========================================== */
+
+[
+    "fullName",
+    "email",
+    "phone",
+    "city",
+    "specialization",
+    "experience",
+    "bio",
+    "skills"
+
+].forEach(
+    function(id){
+
+        const field =
+            document.getElementById(id);
+
+
+        if(field){
+
+            field.addEventListener(
+                "input",
+                updatePreview
+            );
+
+        }
+
+    }
+);
+
+
+/* ==========================================
+   PAGE LOAD
+========================================== */
+
+window.addEventListener(
+    "DOMContentLoaded",
+    function(){
+
+        setTimeout(
+            loadProfile,
+            300
+        );
+
+    }
+);
+
+</script>
+
+</body>
+</html>

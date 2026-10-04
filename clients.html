@@ -1,0 +1,1570 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<title>Clients | The Legal Choice Portal</title>
+
+<link rel="stylesheet" href="portal.css">
+
+<style>
+.client-toolbar{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+    align-items:center;
+}
+
+.client-toolbar input,
+.client-toolbar select{
+    padding:10px 12px;
+    border:1px solid #dfe5ec;
+    border-radius:7px;
+    background:#fff;
+    font-size:13px;
+    outline:none;
+}
+
+.client-toolbar input{
+    min-width:240px;
+}
+
+.client-actions{
+    display:flex;
+    gap:6px;
+}
+
+.icon-btn{
+    width:34px;
+    height:34px;
+    border:1px solid #e2e6eb;
+    background:#fff;
+    border-radius:7px;
+    cursor:pointer;
+    font-size:15px;
+}
+
+.icon-btn:hover{
+    background:#f5f6f8;
+}
+
+.empty{
+    text-align:center;
+    padding:45px 20px;
+    color:#7b8490;
+}
+
+.modal{
+    position:fixed;
+    inset:0;
+    background:rgba(10,20,35,.55);
+    display:none;
+    align-items:center;
+    justify-content:center;
+    z-index:9999;
+    padding:20px;
+}
+
+.modal.show{
+    display:flex;
+}
+
+.modal-box{
+    width:min(760px,100%);
+    max-height:92vh;
+    overflow:auto;
+    background:#fff;
+    border-radius:12px;
+    box-shadow:0 20px 60px rgba(0,0,0,.25);
+}
+
+.modal-head{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:18px 22px;
+    border-bottom:1px solid #edf0f4;
+    position:sticky;
+    top:0;
+    background:#fff;
+    z-index:2;
+}
+
+.modal-head h2{
+    margin:0;
+    font-size:19px;
+}
+
+.close-btn{
+    border:0;
+    background:transparent;
+    font-size:26px;
+    cursor:pointer;
+    color:#555;
+}
+
+.modal-body{
+    padding:22px;
+}
+
+.form-grid{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:16px;
+}
+
+.form-group{
+    display:flex;
+    flex-direction:column;
+    gap:6px;
+}
+
+.form-group.full{
+    grid-column:1/-1;
+}
+
+.form-group label{
+    font-size:12px;
+    font-weight:700;
+    color:#3e4650;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea{
+    width:100%;
+    box-sizing:border-box;
+    border:1px solid #dfe4ea;
+    border-radius:7px;
+    padding:10px 11px;
+    font-size:13px;
+    font-family:inherit;
+    outline:none;
+}
+
+.form-group textarea{
+    min-height:90px;
+    resize:vertical;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus{
+    border-color:#c5a44d;
+}
+
+.modal-footer{
+    display:flex;
+    justify-content:flex-end;
+    gap:10px;
+    padding:16px 22px;
+    border-top:1px solid #edf0f4;
+}
+
+.client-details{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:12px;
+}
+
+.detail-box{
+    border:1px solid #e7ebef;
+    border-radius:8px;
+    padding:13px;
+    background:#fafbfc;
+}
+
+.detail-box.full{
+    grid-column:1/-1;
+}
+
+.detail-box small{
+    display:block;
+    color:#7d8792;
+    font-size:11px;
+    margin-bottom:5px;
+}
+
+.detail-box strong{
+    font-size:13px;
+    color:#202832;
+    word-break:break-word;
+}
+
+@media(max-width:700px){
+
+    .form-grid,
+    .client-details{
+        grid-template-columns:1fr;
+    }
+
+    .form-group.full,
+    .detail-box.full{
+        grid-column:auto;
+    }
+
+    .client-toolbar{
+        width:100%;
+    }
+
+    .client-toolbar input,
+    .client-toolbar select{
+        width:100%;
+        min-width:0;
+    }
+
+    .modal{
+        padding:8px;
+    }
+
+    .modal-box{
+        max-height:96vh;
+    }
+
+    .modal-body{
+        padding:15px;
+    }
+
+    .modal-head,
+    .modal-footer{
+        padding:14px 15px;
+    }
+
+    .tablewrap{
+        overflow-x:auto;
+    }
+
+    .table{
+        min-width:760px;
+    }
+}
+</style>
+</head>
+
+<body onload="protectPortal()">
+
+<div class="portal">
+
+<aside class="side">
+
+<a class="portal-brand" href="dashboard.html">
+    <img src="assets/logo.png" alt="Logo">
+
+    <div>
+        <strong>The Legal Choice</strong>
+        <small>JUSTICE · TRUST · SUPPORT</small>
+    </div>
+</a>
+
+<div class="user-mini">
+
+<img
+    id="sidebarPhoto"
+    class="avatar"
+    src="assets/profile.jpg"
+    alt="Profile">
+
+<div>
+    <strong id="sidebarName">Adv. Safi ur Rehman Mianwala</strong>
+    <span>● Online · Lawyer</span>
+</div>
+
+</div>
+
+<div class="navtitle">Main Menu</div>
+
+<a href="dashboard.html">
+    <i class="ico">▣</i>
+    <span>Dashboard</span>
+</a>
+
+<a href="cases.html">
+    <i class="ico">▤</i>
+    <span>My Cases</span>
+</a>
+
+<a class="active" href="clients.html">
+    <i class="ico">♙</i>
+    <span>Clients</span>
+</a>
+
+<a href="appointments.html">
+    <i class="ico">◫</i>
+    <span>Appointments</span>
+</a>
+
+<a href="messages.html">
+    <i class="ico">✉</i>
+    <span>Messages</span>
+</a>
+
+<a href="documents.html">
+    <i class="ico">▧</i>
+    <span>Documents</span>
+</a>
+
+<a href="videos-admin.html">
+    <i class="ico">▶</i>
+    <span>Videos</span>
+</a>
+
+<a href="profile.html">
+    <i class="ico">◉</i>
+    <span>Profile</span>
+</a>
+
+<a href="settings.html">
+    <i class="ico">⚙</i>
+    <span>Settings</span>
+</a>
+
+<div class="navtitle">Account</div>
+
+<a href="index.html">
+    <i class="ico">⌂</i>
+    <span>Public Website</span>
+</a>
+
+<a href="#" onclick="portalLogout();return false">
+    <i class="ico">↪</i>
+    <span>Logout</span>
+</a>
+
+</aside>
+
+
+<main class="main">
+
+<header class="topbar">
+
+<div class="search">
+    ⌕
+    <input
+        id="topSearch"
+        placeholder="Search clients..."
+        oninput="searchClients(this.value)">
+</div>
+
+<div class="top-actions">
+
+<span class="bell">
+    ♧
+    <b>3</b>
+</span>
+
+<a class="top-user" href="profile.html">
+
+<img
+    id="topPhoto"
+    src="assets/profile.jpg"
+    alt="Profile">
+
+<div>
+    <strong id="topName">Adv. Safi ur Rehman Mianwala</strong>
+    <br>
+    <span class="muted">Lawyer</span>
+</div>
+
+</a>
+
+</div>
+
+</header>
+
+
+<div class="content">
+
+<div class="heading">
+
+<div>
+<h1>Clients</h1>
+
+<p class="muted">
+Manage client profiles, contact information and notes.
+</p>
+</div>
+
+<button
+    class="btn gold"
+    onclick="openClientForm()">
+
+＋ Add New Client
+
+</button>
+
+</div>
+
+
+<div class="cards">
+
+<div class="statcard">
+<div>
+<span class="label">Total Clients</span>
+<strong id="totalClients">0</strong>
+</div>
+<div class="staticon">♙</div>
+</div>
+
+<div class="statcard">
+<div>
+<span class="label">Individuals</span>
+<strong id="individualClients">0</strong>
+</div>
+<div class="staticon">●</div>
+</div>
+
+<div class="statcard">
+<div>
+<span class="label">Companies</span>
+<strong id="companyClients">0</strong>
+</div>
+<div class="staticon">▣</div>
+</div>
+
+<div class="statcard">
+<div>
+<span class="label">New Clients</span>
+<strong id="newClients">0</strong>
+</div>
+<div class="staticon">＋</div>
+</div>
+
+</div>
+
+
+<section class="panel">
+
+<div class="panelhead">
+
+<h2>All Clients</h2>
+
+<div class="client-toolbar">
+
+<input
+    id="clientSearch"
+    type="text"
+    placeholder="Search name, phone or email..."
+    oninput="filterClients()">
+
+<select
+    id="clientTypeFilter"
+    onchange="filterClients()">
+
+<option value="">All Types</option>
+<option value="Individual">Individual</option>
+<option value="Company">Company</option>
+
+</select>
+
+</div>
+
+</div>
+
+
+<div class="tablewrap">
+
+<table class="table">
+
+<thead>
+
+<tr>
+
+<th>Client</th>
+<th>Phone</th>
+<th>Email</th>
+<th>Type</th>
+<th>Added</th>
+<th>Action</th>
+
+</tr>
+
+</thead>
+
+<tbody id="clientsTable"></tbody>
+
+</table>
+
+</div>
+
+</section>
+
+</div>
+
+</main>
+
+</div>
+
+
+<div class="mobilebar">
+
+<a class="btn" href="dashboard.html">
+Dashboard
+</a>
+
+<button class="btn gold" onclick="openClientForm()">
+＋ Client
+</button>
+
+<a
+    class="btn"
+    href="#"
+    onclick="portalLogout();return false">
+
+Logout
+</a>
+
+</div>
+
+
+<!-- ADD / EDIT CLIENT -->
+
+<div class="modal" id="clientModal">
+
+<div class="modal-box">
+
+<div class="modal-head">
+
+<h2 id="modalTitle">
+Add New Client
+</h2>
+
+<button
+    type="button"
+    class="close-btn"
+    onclick="closeModal('clientModal')">
+
+×
+
+</button>
+
+</div>
+
+
+<form id="clientForm" onsubmit="saveClient(event)">
+
+<div class="modal-body">
+
+<input
+    type="hidden"
+    id="editClientId">
+
+
+<div class="form-grid">
+
+<div class="form-group">
+
+<label for="fullName">
+Full Name *
+</label>
+
+<input
+    id="fullName"
+    required
+    placeholder="Client full name">
+
+</div>
+
+
+<div class="form-group">
+
+<label for="clientType">
+Client Type
+</label>
+
+<select id="clientType">
+
+<option value="Individual">
+Individual
+</option>
+
+<option value="Company">
+Company
+</option>
+
+</select>
+
+</div>
+
+
+<div class="form-group">
+
+<label for="phone">
+Phone
+</label>
+
+<input
+    id="phone"
+    placeholder="+92 3xx xxxxxxx">
+
+</div>
+
+
+<div class="form-group">
+
+<label for="email">
+Email
+</label>
+
+<input
+    id="email"
+    type="email"
+    placeholder="client@example.com">
+
+</div>
+
+
+<div class="form-group">
+
+<label for="cnic">
+CNIC
+</label>
+
+<input
+    id="cnic"
+    placeholder="xxxxx-xxxxxxx-x">
+
+</div>
+
+
+<div class="form-group full">
+
+<label for="address">
+Address
+</label>
+
+<textarea
+    id="address"
+    placeholder="Client address..."></textarea>
+
+</div>
+
+
+<div class="form-group full">
+
+<label for="notes">
+Notes
+</label>
+
+<textarea
+    id="notes"
+    placeholder="Private notes about this client..."></textarea>
+
+</div>
+
+</div>
+
+</div>
+
+
+<div class="modal-footer">
+
+<button
+    type="button"
+    class="btn light"
+    onclick="closeModal('clientModal')">
+
+Cancel
+
+</button>
+
+<button
+    type="submit"
+    class="btn gold"
+    id="saveClientButton">
+
+Save Client
+
+</button>
+
+</div>
+
+</form>
+
+</div>
+
+</div>
+
+
+<!-- VIEW CLIENT -->
+
+<div class="modal" id="viewModal">
+
+<div class="modal-box">
+
+<div class="modal-head">
+
+<h2>Client Details</h2>
+
+<button
+    type="button"
+    class="close-btn"
+    onclick="closeModal('viewModal')">
+
+×
+
+</button>
+
+</div>
+
+<div class="modal-body" id="clientDetails"></div>
+
+</div>
+
+</div>
+
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script src="portal.js"></script>
+
+
+<script>
+
+const CLIENTS_SUPABASE_URL =
+"https://ibzxisfangonytpknthu.supabase.co";
+
+const CLIENTS_SUPABASE_KEY =
+"sb_publishable_S0YKbX1MIaBB9HxL5KoEAw_X0mymq8q";
+
+const clientsSupabase =
+window.supabase.createClient(
+    CLIENTS_SUPABASE_URL,
+    CLIENTS_SUPABASE_KEY
+);
+
+let clients = [];
+let currentUser = null;
+
+
+async function getCurrentUser(){
+
+    const {
+        data,
+        error
+    } =
+    await clientsSupabase.auth.getSession();
+
+    if(
+        error ||
+        !data.session ||
+        !data.session.user
+    ){
+
+        window.location.href =
+        "portal-login.html";
+
+        return null;
+    }
+
+    currentUser =
+    data.session.user;
+
+    return currentUser;
+}
+
+
+async function loadClients(){
+
+    try{
+
+        const user =
+        await getCurrentUser();
+
+        if(!user){
+            return;
+        }
+
+        const {
+            data,
+            error
+        } =
+        await clientsSupabase
+        .from("clients")
+        .select("*")
+        .eq("created_by",user.id)
+        .order(
+            "created_at",
+            {ascending:false}
+        );
+
+        if(error){
+
+            console.error(error);
+
+            alert(
+                "Clients load error: " +
+                error.message
+            );
+
+            return;
+        }
+
+        clients =
+        data || [];
+
+        updateStats();
+        renderClients(clients);
+        updateProfileHeader();
+
+    }catch(error){
+
+        console.error(error);
+
+        alert(
+            "Something went wrong while loading clients."
+        );
+    }
+}
+
+
+async function updateProfileHeader(){
+
+    if(!currentUser){
+        return;
+    }
+
+    const {
+        data:profile
+    } =
+    await clientsSupabase
+    .from("Profile")
+    .select(
+        "full_name,profile_image"
+    )
+    .eq(
+        "id",
+        currentUser.id
+    )
+    .maybeSingle();
+
+    if(!profile){
+        return;
+    }
+
+    const name =
+    profile.full_name ||
+    currentUser.email ||
+    "Lawyer";
+
+    const sidebarName =
+    document.getElementById(
+        "sidebarName"
+    );
+
+    const topName =
+    document.getElementById(
+        "topName"
+    );
+
+    if(sidebarName){
+        sidebarName.textContent = name;
+    }
+
+    if(topName){
+        topName.textContent = name;
+    }
+
+    if(profile.profile_image){
+
+        const sidebarPhoto =
+        document.getElementById(
+            "sidebarPhoto"
+        );
+
+        const topPhoto =
+        document.getElementById(
+            "topPhoto"
+        );
+
+        if(sidebarPhoto){
+            sidebarPhoto.src =
+            profile.profile_image;
+        }
+
+        if(topPhoto){
+            topPhoto.src =
+            profile.profile_image;
+        }
+    }
+}
+
+
+function updateStats(){
+
+    document.getElementById(
+        "totalClients"
+    ).textContent =
+    clients.length;
+
+    document.getElementById(
+        "individualClients"
+    ).textContent =
+    clients.filter(
+        c =>
+        c.client_type === "Individual"
+    ).length;
+
+    document.getElementById(
+        "companyClients"
+    ).textContent =
+    clients.filter(
+        c =>
+        c.client_type === "Company"
+    ).length;
+
+    const now =
+    new Date();
+
+    const month =
+    now.getMonth();
+
+    const year =
+    now.getFullYear();
+
+    document.getElementById(
+        "newClients"
+    ).textContent =
+    clients.filter(c => {
+
+        const d =
+        new Date(c.created_at);
+
+        return (
+            d.getMonth() === month &&
+            d.getFullYear() === year
+        );
+
+    }).length;
+}
+
+
+function escapeHTML(value){
+
+    return String(
+        value ?? ""
+    )
+    .replace(/&/g,"&amp;")
+    .replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;")
+    .replace(/"/g,"&quot;")
+    .replace(/'/g,"&#039;");
+}
+
+
+function formatDate(value){
+
+    if(!value){
+        return "—";
+    }
+
+    const d =
+    new Date(value);
+
+    if(
+        Number.isNaN(
+            d.getTime()
+        )
+    ){
+        return "—";
+    }
+
+    return d.toLocaleDateString(
+        "en-GB",
+        {
+            day:"2-digit",
+            month:"short",
+            year:"numeric"
+        }
+    );
+}
+
+
+function renderClients(list){
+
+    const tbody =
+    document.getElementById(
+        "clientsTable"
+    );
+
+    if(!tbody){
+        return;
+    }
+
+    if(!list.length){
+
+        tbody.innerHTML = `
+        <tr>
+            <td colspan="6">
+                <div class="empty">
+                    No clients found.
+                </div>
+            </td>
+        </tr>
+        `;
+
+        return;
+    }
+
+    tbody.innerHTML =
+    list.map(client => {
+
+        const name =
+        escapeHTML(
+            client.full_name
+        );
+
+        const phone =
+        escapeHTML(
+            client.phone || "—"
+        );
+
+        const email =
+        escapeHTML(
+            client.email || "—"
+        );
+
+        const type =
+        escapeHTML(
+            client.client_type || "Individual"
+        );
+
+        return `
+        <tr>
+
+            <td>
+                <strong>${name}</strong>
+            </td>
+
+            <td>
+                ${phone}
+            </td>
+
+            <td>
+                ${email}
+            </td>
+
+            <td>
+                ${type}
+            </td>
+
+            <td>
+                ${formatDate(client.created_at)}
+            </td>
+
+            <td>
+
+                <div class="client-actions">
+
+                    <button
+                        class="icon-btn"
+                        title="View"
+                        onclick="viewClient('${client.id}')">
+
+                        👁
+
+                    </button>
+
+                    <button
+                        class="icon-btn"
+                        title="Edit"
+                        onclick="editClient('${client.id}')">
+
+                        ✎
+
+                    </button>
+
+                    <button
+                        class="icon-btn"
+                        title="Delete"
+                        onclick="deleteClient('${client.id}')">
+
+                        🗑
+
+                    </button>
+
+                </div>
+
+            </td>
+
+        </tr>
+        `;
+
+    }).join("");
+}
+
+
+function filterClients(){
+
+    const search =
+    document.getElementById(
+        "clientSearch"
+    ).value
+    .toLowerCase()
+    .trim();
+
+    const type =
+    document.getElementById(
+        "clientTypeFilter"
+    ).value;
+
+    const filtered =
+    clients.filter(client => {
+
+        const text =
+        [
+            client.full_name,
+            client.phone,
+            client.email,
+            client.cnic,
+            client.address
+        ]
+        .join(" ")
+        .toLowerCase();
+
+        const searchMatch =
+        !search ||
+        text.includes(search);
+
+        const typeMatch =
+        !type ||
+        client.client_type === type;
+
+        return (
+            searchMatch &&
+            typeMatch
+        );
+    });
+
+    renderClients(filtered);
+}
+
+
+function searchClients(value){
+
+    const input =
+    document.getElementById(
+        "clientSearch"
+    );
+
+    if(input){
+        input.value = value;
+    }
+
+    filterClients();
+}
+
+
+function openClientForm(){
+
+    document.getElementById(
+        "clientModal"
+    ).classList.add("show");
+
+    document.getElementById(
+        "modalTitle"
+    ).textContent =
+    "Add New Client";
+
+    document.getElementById(
+        "clientForm"
+    ).reset();
+
+    document.getElementById(
+        "editClientId"
+    ).value = "";
+
+    document.getElementById(
+        "saveClientButton"
+    ).textContent =
+    "Save Client";
+}
+
+
+function closeModal(id){
+
+    const modal =
+    document.getElementById(id);
+
+    if(modal){
+        modal.classList.remove("show");
+    }
+}
+
+
+function editClient(id){
+
+    const client =
+    clients.find(
+        c => c.id === id
+    );
+
+    if(!client){
+        return;
+    }
+
+    document.getElementById(
+        "clientModal"
+    ).classList.add("show");
+
+    document.getElementById(
+        "modalTitle"
+    ).textContent =
+    "Edit Client";
+
+    document.getElementById(
+        "editClientId"
+    ).value =
+    client.id;
+
+    document.getElementById(
+        "fullName"
+    ).value =
+    client.full_name || "";
+
+    document.getElementById(
+        "clientType"
+    ).value =
+    client.client_type || "Individual";
+
+    document.getElementById(
+        "phone"
+    ).value =
+    client.phone || "";
+
+    document.getElementById(
+        "email"
+    ).value =
+    client.email || "";
+
+    document.getElementById(
+        "cnic"
+    ).value =
+    client.cnic || "";
+
+    document.getElementById(
+        "address"
+    ).value =
+    client.address || "";
+
+    document.getElementById(
+        "notes"
+    ).value =
+    client.notes || "";
+
+    document.getElementById(
+        "saveClientButton"
+    ).textContent =
+    "Update Client";
+}
+
+
+async function saveClient(event){
+
+    event.preventDefault();
+
+    const user =
+    await getCurrentUser();
+
+    if(!user){
+        return;
+    }
+
+    const button =
+    document.getElementById(
+        "saveClientButton"
+    );
+
+    button.disabled = true;
+    button.textContent = "Saving...";
+
+    const id =
+    document.getElementById(
+        "editClientId"
+    ).value;
+
+    const clientData = {
+
+        full_name:
+        document.getElementById(
+            "fullName"
+        ).value.trim(),
+
+        phone:
+        document.getElementById(
+            "phone"
+        ).value.trim(),
+
+        email:
+        document.getElementById(
+            "email"
+        ).value.trim(),
+
+        cnic:
+        document.getElementById(
+            "cnic"
+        ).value.trim(),
+
+        address:
+        document.getElementById(
+            "address"
+        ).value.trim(),
+
+        client_type:
+        document.getElementById(
+            "clientType"
+        ).value,
+
+        notes:
+        document.getElementById(
+            "notes"
+        ).value.trim(),
+
+        updated_at:
+        new Date().toISOString()
+    };
+
+
+    try{
+
+        let result;
+
+        if(id){
+
+            result =
+            await clientsSupabase
+            .from("clients")
+            .update(clientData)
+            .eq("id",id)
+            .eq("created_by",user.id);
+
+        }else{
+
+            clientData.created_by =
+            user.id;
+
+            result =
+            await clientsSupabase
+            .from("clients")
+            .insert(
+                clientData
+            );
+        }
+
+
+        if(result.error){
+
+            throw result.error;
+        }
+
+
+        closeModal(
+            "clientModal"
+        );
+
+        await loadClients();
+
+        alert(
+            id
+            ? "Client updated successfully."
+            : "Client added successfully."
+        );
+
+    }catch(error){
+
+        console.error(error);
+
+        alert(
+            "Could not save client: " +
+            error.message
+        );
+
+    }finally{
+
+        button.disabled = false;
+
+        button.textContent =
+        id
+        ? "Update Client"
+        : "Save Client";
+    }
+}
+
+
+function viewClient(id){
+
+    const client =
+    clients.find(
+        c => c.id === id
+    );
+
+    if(!client){
+        return;
+    }
+
+    document.getElementById(
+        "clientDetails"
+    ).innerHTML = `
+
+        <div class="client-details">
+
+            <div class="detail-box">
+                <small>Full Name</small>
+                <strong>
+                    ${escapeHTML(client.full_name)}
+                </strong>
+            </div>
+
+            <div class="detail-box">
+                <small>Client Type</small>
+                <strong>
+                    ${escapeHTML(client.client_type || "Individual")}
+                </strong>
+            </div>
+
+            <div class="detail-box">
+                <small>Phone</small>
+                <strong>
+                    ${escapeHTML(client.phone || "—")}
+                </strong>
+            </div>
+
+            <div class="detail-box">
+                <small>Email</small>
+                <strong>
+                    ${escapeHTML(client.email || "—")}
+                </strong>
+            </div>
+
+            <div class="detail-box">
+                <small>CNIC</small>
+                <strong>
+                    ${escapeHTML(client.cnic || "—")}
+                </strong>
+            </div>
+
+            <div class="detail-box">
+                <small>Added</small>
+                <strong>
+                    ${formatDate(client.created_at)}
+                </strong>
+            </div>
+
+            <div class="detail-box full">
+                <small>Address</small>
+                <strong>
+                    ${escapeHTML(client.address || "—")}
+                </strong>
+            </div>
+
+            <div class="detail-box full">
+                <small>Notes</small>
+                <strong>
+                    ${escapeHTML(client.notes || "—")}
+                </strong>
+            </div>
+
+        </div>
+    `;
+
+    document.getElementById(
+        "viewModal"
+    ).classList.add("show");
+}
+
+
+async function deleteClient(id){
+
+    const client =
+    clients.find(
+        c => c.id === id
+    );
+
+    if(!client){
+        return;
+    }
+
+    const confirmed =
+    confirm(
+        "Delete client \"" +
+        client.full_name +
+        "\"?\n\nThis action cannot be undone."
+    );
+
+    if(!confirmed){
+        return;
+    }
+
+    const user =
+    await getCurrentUser();
+
+    if(!user){
+        return;
+    }
+
+    try{
+
+        const {
+            error
+        } =
+        await clientsSupabase
+        .from("clients")
+        .delete()
+        .eq("id",id)
+        .eq("created_by",user.id);
+
+        if(error){
+            throw error;
+        }
+
+        await loadClients();
+
+        alert(
+            "Client deleted successfully."
+        );
+
+    }catch(error){
+
+        console.error(error);
+
+        alert(
+            "Could not delete client: " +
+            error.message
+        );
+    }
+}
+
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function(){
+
+        loadClients();
+
+    }
+);
+
+
+window.addEventListener(
+    "click",
+    function(event){
+
+        if(
+            event.target.classList.contains(
+                "modal"
+            )
+        ){
+
+            event.target.classList.remove(
+                "show"
+            );
+
+        }
+
+    }
+);
+
+</script>
+
+</body>
+</html>

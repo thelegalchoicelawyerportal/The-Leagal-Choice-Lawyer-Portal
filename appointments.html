@@ -1,0 +1,1754 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<title>Appointments | The Legal Choice Portal</title>
+
+<link rel="stylesheet" href="portal.css">
+
+<style>
+.app-toolbar{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+    align-items:center;
+}
+
+.app-toolbar input,
+.app-toolbar select{
+    padding:10px 12px;
+    border:1px solid #dfe5ec;
+    border-radius:7px;
+    background:#fff;
+    font-size:13px;
+    outline:none;
+}
+
+.app-toolbar input{
+    min-width:240px;
+}
+
+.app-actions{
+    display:flex;
+    gap:6px;
+}
+
+.icon-btn{
+    width:34px;
+    height:34px;
+    border:1px solid #e2e6eb;
+    background:#fff;
+    border-radius:7px;
+    cursor:pointer;
+    font-size:15px;
+}
+
+.icon-btn:hover{
+    background:#f5f6f8;
+}
+
+.empty{
+    text-align:center;
+    padding:45px 20px;
+    color:#7b8490;
+}
+
+.status-badge{
+    display:inline-block;
+    padding:5px 9px;
+    border-radius:20px;
+    font-size:11px;
+    font-weight:700;
+}
+
+.status-scheduled{
+    background:#fff4d6;
+    color:#8a6800;
+}
+
+.status-completed{
+    background:#e5f6ea;
+    color:#26733a;
+}
+
+.status-cancelled{
+    background:#fde7e7;
+    color:#9b3030;
+}
+
+.status-rescheduled{
+    background:#e8eefb;
+    color:#34548d;
+}
+
+.modal{
+    position:fixed;
+    inset:0;
+    background:rgba(10,20,35,.55);
+    display:none;
+    align-items:center;
+    justify-content:center;
+    z-index:9999;
+    padding:20px;
+}
+
+.modal.show{
+    display:flex;
+}
+
+.modal-box{
+    width:min(760px,100%);
+    max-height:92vh;
+    overflow:auto;
+    background:#fff;
+    border-radius:12px;
+    box-shadow:0 20px 60px rgba(0,0,0,.25);
+}
+
+.modal-head{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:18px 22px;
+    border-bottom:1px solid #edf0f4;
+    position:sticky;
+    top:0;
+    background:#fff;
+    z-index:2;
+}
+
+.modal-head h2{
+    margin:0;
+    font-size:19px;
+}
+
+.close-btn{
+    border:0;
+    background:transparent;
+    font-size:26px;
+    cursor:pointer;
+    color:#555;
+}
+
+.modal-body{
+    padding:22px;
+}
+
+.form-grid{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:16px;
+}
+
+.form-group{
+    display:flex;
+    flex-direction:column;
+    gap:6px;
+}
+
+.form-group.full{
+    grid-column:1/-1;
+}
+
+.form-group label{
+    font-size:12px;
+    font-weight:700;
+    color:#3e4650;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea{
+    width:100%;
+    box-sizing:border-box;
+    border:1px solid #dfe4ea;
+    border-radius:7px;
+    padding:10px 11px;
+    font-size:13px;
+    font-family:inherit;
+    outline:none;
+}
+
+.form-group textarea{
+    min-height:90px;
+    resize:vertical;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus{
+    border-color:#c5a44d;
+}
+
+.modal-footer{
+    display:flex;
+    justify-content:flex-end;
+    gap:10px;
+    padding:16px 22px;
+    border-top:1px solid #edf0f4;
+}
+
+.detail-grid{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:12px;
+}
+
+.detail-box{
+    border:1px solid #e7ebef;
+    border-radius:8px;
+    padding:13px;
+    background:#fafbfc;
+}
+
+.detail-box.full{
+    grid-column:1/-1;
+}
+
+.detail-box small{
+    display:block;
+    color:#7d8792;
+    font-size:11px;
+    margin-bottom:5px;
+}
+
+.detail-box strong{
+    font-size:13px;
+    color:#202832;
+    word-break:break-word;
+}
+
+@media(max-width:700px){
+
+    .form-grid,
+    .detail-grid{
+        grid-template-columns:1fr;
+    }
+
+    .form-group.full,
+    .detail-box.full{
+        grid-column:auto;
+    }
+
+    .app-toolbar{
+        width:100%;
+    }
+
+    .app-toolbar input,
+    .app-toolbar select{
+        width:100%;
+        min-width:0;
+    }
+
+    .modal{
+        padding:8px;
+    }
+
+    .modal-box{
+        max-height:96vh;
+    }
+
+    .modal-body{
+        padding:15px;
+    }
+
+    .modal-head,
+    .modal-footer{
+        padding:14px 15px;
+    }
+
+    .tablewrap{
+        overflow-x:auto;
+    }
+
+    .table{
+        min-width:900px;
+    }
+}
+</style>
+</head>
+
+<body onload="protectPortal()">
+
+<div class="portal">
+
+<aside class="side">
+
+<a class="portal-brand" href="dashboard.html">
+    <img src="assets/logo.png" alt="Logo">
+
+    <div>
+        <strong>The Legal Choice</strong>
+        <small>JUSTICE · TRUST · SUPPORT</small>
+    </div>
+</a>
+
+<div class="user-mini">
+
+<img
+    id="sidebarPhoto"
+    class="avatar"
+    src="assets/profile.jpg"
+    alt="Profile">
+
+<div>
+    <strong id="sidebarName">Adv. Safi ur Rehman Mianwala</strong>
+    <span>● Online · Lawyer</span>
+</div>
+
+</div>
+
+<div class="navtitle">Main Menu</div>
+
+<a href="dashboard.html">
+    <i class="ico">▣</i>
+    <span>Dashboard</span>
+</a>
+
+<a href="cases.html">
+    <i class="ico">▤</i>
+    <span>My Cases</span>
+</a>
+
+<a href="clients.html">
+    <i class="ico">♙</i>
+    <span>Clients</span>
+</a>
+
+<a class="active" href="appointments.html">
+    <i class="ico">◫</i>
+    <span>Appointments</span>
+</a>
+
+<a href="messages.html">
+    <i class="ico">✉</i>
+    <span>Messages</span>
+</a>
+
+<a href="documents.html">
+    <i class="ico">▧</i>
+    <span>Documents</span>
+</a>
+
+<a href="videos-admin.html">
+    <i class="ico">▶</i>
+    <span>Videos</span>
+</a>
+
+<a href="profile.html">
+    <i class="ico">◉</i>
+    <span>Profile</span>
+</a>
+
+<a href="settings.html">
+    <i class="ico">⚙</i>
+    <span>Settings</span>
+</a>
+
+<div class="navtitle">Account</div>
+
+<a href="index.html">
+    <i class="ico">⌂</i>
+    <span>Public Website</span>
+</a>
+
+<a href="#" onclick="portalLogout();return false">
+    <i class="ico">↪</i>
+    <span>Logout</span>
+</a>
+
+</aside>
+
+
+<main class="main">
+
+<header class="topbar">
+
+<div class="search">
+    ⌕
+    <input
+        id="topSearch"
+        placeholder="Search appointments..."
+        oninput="searchAppointments(this.value)">
+</div>
+
+<div class="top-actions">
+
+<span class="bell">
+    ♧
+    <b>3</b>
+</span>
+
+<a class="top-user" href="profile.html">
+
+<img
+    id="topPhoto"
+    src="assets/profile.jpg"
+    alt="Profile">
+
+<div>
+    <strong id="topName">Adv. Safi ur Rehman Mianwala</strong>
+    <br>
+    <span class="muted">Lawyer</span>
+</div>
+
+</a>
+
+</div>
+
+</header>
+
+
+<div class="content">
+
+<div class="heading">
+
+<div>
+
+<h1>Appointments</h1>
+
+<p class="muted">
+Manage consultations, meetings and upcoming appointments.
+</p>
+
+</div>
+
+<button
+    class="btn gold"
+    onclick="openAppointmentForm()">
+
+＋ Add Appointment
+
+</button>
+
+</div>
+
+
+<div class="cards">
+
+<div class="statcard">
+
+<div>
+<span class="label">Total</span>
+<strong id="totalAppointments">0</strong>
+</div>
+
+<div class="staticon">◫</div>
+
+</div>
+
+
+<div class="statcard">
+
+<div>
+<span class="label">Scheduled</span>
+<strong id="scheduledAppointments">0</strong>
+</div>
+
+<div class="staticon">◷</div>
+
+</div>
+
+
+<div class="statcard">
+
+<div>
+<span class="label">Completed</span>
+<strong id="completedAppointments">0</strong>
+</div>
+
+<div class="staticon">✓</div>
+
+</div>
+
+
+<div class="statcard">
+
+<div>
+<span class="label">Cancelled</span>
+<strong id="cancelledAppointments">0</strong>
+</div>
+
+<div class="staticon">×</div>
+
+</div>
+
+</div>
+
+
+<section class="panel">
+
+<div class="panelhead">
+
+<h2>All Appointments</h2>
+
+<div class="app-toolbar">
+
+<input
+    id="appointmentSearch"
+    type="text"
+    placeholder="Search client, phone or email..."
+    oninput="filterAppointments()">
+
+<select
+    id="appointmentStatusFilter"
+    onchange="filterAppointments()">
+
+<option value="">All Status</option>
+<option value="Scheduled">Scheduled</option>
+<option value="Completed">Completed</option>
+<option value="Cancelled">Cancelled</option>
+<option value="Rescheduled">Rescheduled</option>
+
+</select>
+
+<select
+    id="appointmentTypeFilter"
+    onchange="filterAppointments()">
+
+<option value="">All Types</option>
+<option value="Consultation">Consultation</option>
+<option value="Meeting">Meeting</option>
+<option value="Court Meeting">Court Meeting</option>
+<option value="Phone Call">Phone Call</option>
+<option value="Online Consultation">Online Consultation</option>
+<option value="Other">Other</option>
+
+</select>
+
+</div>
+
+</div>
+
+
+<div class="tablewrap">
+
+<table class="table">
+
+<thead>
+
+<tr>
+
+<th>Client</th>
+<th>Date & Time</th>
+<th>Type</th>
+<th>Phone</th>
+<th>Location</th>
+<th>Status</th>
+<th>Action</th>
+
+</tr>
+
+</thead>
+
+<tbody id="appointmentsTable"></tbody>
+
+</table>
+
+</div>
+
+</section>
+
+</div>
+
+</main>
+
+</div>
+
+
+<div class="mobilebar">
+
+<a class="btn" href="dashboard.html">
+Dashboard
+</a>
+
+<button class="btn gold" onclick="openAppointmentForm()">
+＋ Appointment
+</button>
+
+<a
+    class="btn"
+    href="#"
+    onclick="portalLogout();return false">
+
+Logout
+
+</a>
+
+</div>
+
+
+<!-- ADD / EDIT APPOINTMENT -->
+
+<div class="modal" id="appointmentModal">
+
+<div class="modal-box">
+
+<div class="modal-head">
+
+<h2 id="modalTitle">
+Add Appointment
+</h2>
+
+<button
+    type="button"
+    class="close-btn"
+    onclick="closeModal('appointmentModal')">
+
+×
+
+</button>
+
+</div>
+
+
+<form
+    id="appointmentForm"
+    onsubmit="saveAppointment(event)">
+
+<div class="modal-body">
+
+<input
+    type="hidden"
+    id="editAppointmentId">
+
+
+<div class="form-grid">
+
+
+<div class="form-group">
+
+<label for="clientName">
+Client Name *
+</label>
+
+<input
+    id="clientName"
+    required
+    placeholder="Client full name">
+
+</div>
+
+
+<div class="form-group">
+
+<label for="clientPhone">
+Client Phone
+</label>
+
+<input
+    id="clientPhone"
+    placeholder="+92 3xx xxxxxxx">
+
+</div>
+
+
+<div class="form-group">
+
+<label for="clientEmail">
+Client Email
+</label>
+
+<input
+    id="clientEmail"
+    type="email"
+    placeholder="client@example.com">
+
+</div>
+
+
+<div class="form-group">
+
+<label for="appointmentDate">
+Appointment Date & Time *
+</label>
+
+<input
+    id="appointmentDate"
+    type="datetime-local"
+    required>
+
+</div>
+
+
+<div class="form-group">
+
+<label for="appointmentType">
+Appointment Type
+</label>
+
+<select id="appointmentType">
+
+<option value="Consultation">
+Consultation
+</option>
+
+<option value="Meeting">
+Meeting
+</option>
+
+<option value="Court Meeting">
+Court Meeting
+</option>
+
+<option value="Phone Call">
+Phone Call
+</option>
+
+<option value="Online Consultation">
+Online Consultation
+</option>
+
+<option value="Other">
+Other
+</option>
+
+</select>
+
+</div>
+
+
+<div class="form-group">
+
+<label for="appointmentStatus">
+Status
+</label>
+
+<select id="appointmentStatus">
+
+<option value="Scheduled">
+Scheduled
+</option>
+
+<option value="Completed">
+Completed
+</option>
+
+<option value="Cancelled">
+Cancelled
+</option>
+
+<option value="Rescheduled">
+Rescheduled
+</option>
+
+</select>
+
+</div>
+
+
+<div class="form-group">
+
+<label for="location">
+Location
+</label>
+
+<input
+    id="location"
+    placeholder="Office / Court / Online">
+
+</div>
+
+
+<div class="form-group full">
+
+<label for="notes">
+Notes
+</label>
+
+<textarea
+    id="notes"
+    placeholder="Appointment notes..."></textarea>
+
+</div>
+
+</div>
+
+</div>
+
+
+<div class="modal-footer">
+
+<button
+    type="button"
+    class="btn light"
+    onclick="closeModal('appointmentModal')">
+
+Cancel
+
+</button>
+
+<button
+    type="submit"
+    class="btn gold"
+    id="saveAppointmentButton">
+
+Save Appointment
+
+</button>
+
+</div>
+
+</form>
+
+</div>
+
+</div>
+
+
+<!-- VIEW APPOINTMENT -->
+
+<div class="modal" id="viewModal">
+
+<div class="modal-box">
+
+<div class="modal-head">
+
+<h2>Appointment Details</h2>
+
+<button
+    type="button"
+    class="close-btn"
+    onclick="closeModal('viewModal')">
+
+×
+
+</button>
+
+</div>
+
+<div
+    class="modal-body"
+    id="appointmentDetails">
+</div>
+
+</div>
+
+</div>
+
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script src="portal.js"></script>
+
+
+<script>
+
+const APPOINTMENTS_SUPABASE_URL =
+"https://ibzxisfangonytpknthu.supabase.co";
+
+const APPOINTMENTS_SUPABASE_KEY =
+"sb_publishable_S0YKbX1MIaBB9HxL5KoEAw_X0mymq8q";
+
+const appointmentsSupabase =
+window.supabase.createClient(
+    APPOINTMENTS_SUPABASE_URL,
+    APPOINTMENTS_SUPABASE_KEY
+);
+
+let appointments = [];
+let currentUser = null;
+
+
+async function getCurrentUser(){
+
+    const {
+        data,
+        error
+    } =
+    await appointmentsSupabase.auth.getSession();
+
+    if(
+        error ||
+        !data.session ||
+        !data.session.user
+    ){
+
+        window.location.href =
+        "portal-login.html";
+
+        return null;
+    }
+
+    currentUser =
+    data.session.user;
+
+    return currentUser;
+}
+
+
+async function loadAppointments(){
+
+    try{
+
+        const user =
+        await getCurrentUser();
+
+        if(!user){
+            return;
+        }
+
+        const {
+            data,
+            error
+        } =
+        await appointmentsSupabase
+        .from("appointments")
+        .select("*")
+        .eq("created_by",user.id)
+        .order(
+            "appointment_date",
+            {ascending:true}
+        );
+
+        if(error){
+
+            console.error(error);
+
+            alert(
+                "Appointments load error: " +
+                error.message
+            );
+
+            return;
+        }
+
+        appointments =
+        data || [];
+
+        updateStats();
+        renderAppointments(appointments);
+        updateProfileHeader();
+
+    }catch(error){
+
+        console.error(error);
+
+        alert(
+            "Something went wrong while loading appointments."
+        );
+    }
+}
+
+
+async function updateProfileHeader(){
+
+    if(!currentUser){
+        return;
+    }
+
+    const {
+        data:profile
+    } =
+    await appointmentsSupabase
+    .from("Profile")
+    .select(
+        "full_name,profile_image"
+    )
+    .eq(
+        "id",
+        currentUser.id
+    )
+    .maybeSingle();
+
+    if(!profile){
+        return;
+    }
+
+    const name =
+    profile.full_name ||
+    currentUser.email ||
+    "Lawyer";
+
+    const sidebarName =
+    document.getElementById("sidebarName");
+
+    const topName =
+    document.getElementById("topName");
+
+    if(sidebarName){
+        sidebarName.textContent = name;
+    }
+
+    if(topName){
+        topName.textContent = name;
+    }
+
+    if(profile.profile_image){
+
+        const sidebarPhoto =
+        document.getElementById("sidebarPhoto");
+
+        const topPhoto =
+        document.getElementById("topPhoto");
+
+        if(sidebarPhoto){
+            sidebarPhoto.src =
+            profile.profile_image;
+        }
+
+        if(topPhoto){
+            topPhoto.src =
+            profile.profile_image;
+        }
+    }
+}
+
+
+function updateStats(){
+
+    document.getElementById(
+        "totalAppointments"
+    ).textContent =
+    appointments.length;
+
+    document.getElementById(
+        "scheduledAppointments"
+    ).textContent =
+    appointments.filter(
+        a => a.status === "Scheduled"
+    ).length;
+
+    document.getElementById(
+        "completedAppointments"
+    ).textContent =
+    appointments.filter(
+        a => a.status === "Completed"
+    ).length;
+
+    document.getElementById(
+        "cancelledAppointments"
+    ).textContent =
+    appointments.filter(
+        a => a.status === "Cancelled"
+    ).length;
+}
+
+
+function escapeHTML(value){
+
+    return String(
+        value ?? ""
+    )
+    .replace(/&/g,"&amp;")
+    .replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;")
+    .replace(/"/g,"&quot;")
+    .replace(/'/g,"&#039;");
+}
+
+
+function formatDateTime(value){
+
+    if(!value){
+        return "—";
+    }
+
+    const d =
+    new Date(value);
+
+    if(
+        Number.isNaN(
+            d.getTime()
+        )
+    ){
+        return "—";
+    }
+
+    return d.toLocaleString(
+        "en-GB",
+        {
+            day:"2-digit",
+            month:"short",
+            year:"numeric",
+            hour:"2-digit",
+            minute:"2-digit"
+        }
+    );
+}
+
+
+function getStatusClass(status){
+
+    const value =
+    String(status || "Scheduled")
+    .toLowerCase();
+
+    if(value === "completed"){
+        return "status-completed";
+    }
+
+    if(value === "cancelled"){
+        return "status-cancelled";
+    }
+
+    if(value === "rescheduled"){
+        return "status-rescheduled";
+    }
+
+    return "status-scheduled";
+}
+
+
+function renderAppointments(list){
+
+    const tbody =
+    document.getElementById(
+        "appointmentsTable"
+    );
+
+    if(!tbody){
+        return;
+    }
+
+    if(!list.length){
+
+        tbody.innerHTML = `
+        <tr>
+            <td colspan="7">
+                <div class="empty">
+                    No appointments found.
+                </div>
+            </td>
+        </tr>
+        `;
+
+        return;
+    }
+
+    tbody.innerHTML =
+    list.map(a => {
+
+        const client =
+        escapeHTML(
+            a.client_name
+        );
+
+        const phone =
+        escapeHTML(
+            a.client_phone || "—"
+        );
+
+        const type =
+        escapeHTML(
+            a.appointment_type || "Consultation"
+        );
+
+        const location =
+        escapeHTML(
+            a.location || "—"
+        );
+
+        const status =
+        escapeHTML(
+            a.status || "Scheduled"
+        );
+
+        return `
+        <tr>
+
+            <td>
+                <strong>${client}</strong>
+                <br>
+                <span class="muted">
+                    ${escapeHTML(a.client_email || "")}
+                </span>
+            </td>
+
+            <td>
+                ${formatDateTime(a.appointment_date)}
+            </td>
+
+            <td>
+                ${type}
+            </td>
+
+            <td>
+                ${phone}
+            </td>
+
+            <td>
+                ${location}
+            </td>
+
+            <td>
+                <span class="status-badge ${getStatusClass(a.status)}">
+                    ${status}
+                </span>
+            </td>
+
+            <td>
+
+                <div class="app-actions">
+
+                    <button
+                        class="icon-btn"
+                        title="View"
+                        onclick="viewAppointment('${a.id}')">
+
+                        👁
+
+                    </button>
+
+                    <button
+                        class="icon-btn"
+                        title="Edit"
+                        onclick="editAppointment('${a.id}')">
+
+                        ✎
+
+                    </button>
+
+                    <button
+                        class="icon-btn"
+                        title="Delete"
+                        onclick="deleteAppointment('${a.id}')">
+
+                        🗑
+
+                    </button>
+
+                </div>
+
+            </td>
+
+        </tr>
+        `;
+
+    }).join("");
+}
+
+
+function filterAppointments(){
+
+    const search =
+    document.getElementById(
+        "appointmentSearch"
+    ).value
+    .toLowerCase()
+    .trim();
+
+    const status =
+    document.getElementById(
+        "appointmentStatusFilter"
+    ).value;
+
+    const type =
+    document.getElementById(
+        "appointmentTypeFilter"
+    ).value;
+
+    const filtered =
+    appointments.filter(a => {
+
+        const text =
+        [
+            a.client_name,
+            a.client_phone,
+            a.client_email,
+            a.location,
+            a.notes
+        ]
+        .join(" ")
+        .toLowerCase();
+
+        const searchMatch =
+        !search ||
+        text.includes(search);
+
+        const statusMatch =
+        !status ||
+        a.status === status;
+
+        const typeMatch =
+        !type ||
+        a.appointment_type === type;
+
+        return (
+            searchMatch &&
+            statusMatch &&
+            typeMatch
+        );
+    });
+
+    renderAppointments(filtered);
+}
+
+
+function searchAppointments(value){
+
+    const input =
+    document.getElementById(
+        "appointmentSearch"
+    );
+
+    if(input){
+        input.value = value;
+    }
+
+    filterAppointments();
+}
+
+
+function openAppointmentForm(){
+
+    document.getElementById(
+        "appointmentModal"
+    ).classList.add("show");
+
+    document.getElementById(
+        "modalTitle"
+    ).textContent =
+    "Add Appointment";
+
+    document.getElementById(
+        "appointmentForm"
+    ).reset();
+
+    document.getElementById(
+        "editAppointmentId"
+    ).value = "";
+
+    document.getElementById(
+        "saveAppointmentButton"
+    ).textContent =
+    "Save Appointment";
+}
+
+
+function closeModal(id){
+
+    const modal =
+    document.getElementById(id);
+
+    if(modal){
+        modal.classList.remove("show");
+    }
+}
+
+
+function toDateTimeLocal(value){
+
+    if(!value){
+        return "";
+    }
+
+    const d =
+    new Date(value);
+
+    if(
+        Number.isNaN(
+            d.getTime()
+        )
+    ){
+        return "";
+    }
+
+    const offset =
+    d.getTimezoneOffset();
+
+    const local =
+    new Date(
+        d.getTime() -
+        offset * 60000
+    );
+
+    return local
+    .toISOString()
+    .slice(0,16);
+}
+
+
+function editAppointment(id){
+
+    const appointment =
+    appointments.find(
+        a => a.id === id
+    );
+
+    if(!appointment){
+        return;
+    }
+
+    document.getElementById(
+        "appointmentModal"
+    ).classList.add("show");
+
+    document.getElementById(
+        "modalTitle"
+    ).textContent =
+    "Edit Appointment";
+
+    document.getElementById(
+        "editAppointmentId"
+    ).value =
+    appointment.id;
+
+    document.getElementById(
+        "clientName"
+    ).value =
+    appointment.client_name || "";
+
+    document.getElementById(
+        "clientPhone"
+    ).value =
+    appointment.client_phone || "";
+
+    document.getElementById(
+        "clientEmail"
+    ).value =
+    appointment.client_email || "";
+
+    document.getElementById(
+        "appointmentDate"
+    ).value =
+    toDateTimeLocal(
+        appointment.appointment_date
+    );
+
+    document.getElementById(
+        "appointmentType"
+    ).value =
+    appointment.appointment_type ||
+    "Consultation";
+
+    document.getElementById(
+        "appointmentStatus"
+    ).value =
+    appointment.status ||
+    "Scheduled";
+
+    document.getElementById(
+        "location"
+    ).value =
+    appointment.location || "";
+
+    document.getElementById(
+        "notes"
+    ).value =
+    appointment.notes || "";
+
+    document.getElementById(
+        "saveAppointmentButton"
+    ).textContent =
+    "Update Appointment";
+}
+
+
+async function saveAppointment(event){
+
+    event.preventDefault();
+
+    const user =
+    await getCurrentUser();
+
+    if(!user){
+        return;
+    }
+
+    const button =
+    document.getElementById(
+        "saveAppointmentButton"
+    );
+
+    button.disabled = true;
+    button.textContent = "Saving...";
+
+    const id =
+    document.getElementById(
+        "editAppointmentId"
+    ).value;
+
+    const dateValue =
+    document.getElementById(
+        "appointmentDate"
+    ).value;
+
+    const appointmentData = {
+
+        client_name:
+        document.getElementById(
+            "clientName"
+        ).value.trim(),
+
+        client_phone:
+        document.getElementById(
+            "clientPhone"
+        ).value.trim(),
+
+        client_email:
+        document.getElementById(
+            "clientEmail"
+        ).value.trim(),
+
+        appointment_date:
+        new Date(
+            dateValue
+        ).toISOString(),
+
+        appointment_type:
+        document.getElementById(
+            "appointmentType"
+        ).value,
+
+        status:
+        document.getElementById(
+            "appointmentStatus"
+        ).value,
+
+        location:
+        document.getElementById(
+            "location"
+        ).value.trim(),
+
+        notes:
+        document.getElementById(
+            "notes"
+        ).value.trim(),
+
+        updated_at:
+        new Date().toISOString()
+    };
+
+    try{
+
+        let result;
+
+        if(id){
+
+            result =
+            await appointmentsSupabase
+            .from("appointments")
+            .update(appointmentData)
+            .eq("id",id)
+            .eq("created_by",user.id);
+
+        }else{
+
+            appointmentData.created_by =
+            user.id;
+
+            result =
+            await appointmentsSupabase
+            .from("appointments")
+            .insert(
+                appointmentData
+            );
+        }
+
+        if(result.error){
+            throw result.error;
+        }
+
+        closeModal(
+            "appointmentModal"
+        );
+
+        await loadAppointments();
+
+        alert(
+            id
+            ? "Appointment updated successfully."
+            : "Appointment added successfully."
+        );
+
+    }catch(error){
+
+        console.error(error);
+
+        alert(
+            "Could not save appointment: " +
+            error.message
+        );
+
+    }finally{
+
+        button.disabled = false;
+
+        button.textContent =
+        id
+        ? "Update Appointment"
+        : "Save Appointment";
+    }
+}
+
+
+function viewAppointment(id){
+
+    const a =
+    appointments.find(
+        x => x.id === id
+    );
+
+    if(!a){
+        return;
+    }
+
+    document.getElementById(
+        "appointmentDetails"
+    ).innerHTML = `
+
+        <div class="detail-grid">
+
+            <div class="detail-box">
+                <small>Client Name</small>
+                <strong>
+                    ${escapeHTML(a.client_name)}
+                </strong>
+            </div>
+
+            <div class="detail-box">
+                <small>Status</small>
+                <strong>
+                    ${escapeHTML(a.status || "Scheduled")}
+                </strong>
+            </div>
+
+            <div class="detail-box">
+                <small>Phone</small>
+                <strong>
+                    ${escapeHTML(a.client_phone || "—")}
+                </strong>
+            </div>
+
+            <div class="detail-box">
+                <small>Email</small>
+                <strong>
+                    ${escapeHTML(a.client_email || "—")}
+                </strong>
+            </div>
+
+            <div class="detail-box">
+                <small>Date & Time</small>
+                <strong>
+                    ${formatDateTime(a.appointment_date)}
+                </strong>
+            </div>
+
+            <div class="detail-box">
+                <small>Appointment Type</small>
+                <strong>
+                    ${escapeHTML(a.appointment_type || "Consultation")}
+                </strong>
+            </div>
+
+            <div class="detail-box full">
+                <small>Location</small>
+                <strong>
+                    ${escapeHTML(a.location || "—")}
+                </strong>
+            </div>
+
+            <div class="detail-box full">
+                <small>Notes</small>
+                <strong>
+                    ${escapeHTML(a.notes || "—")}
+                </strong>
+            </div>
+
+        </div>
+    `;
+
+    document.getElementById(
+        "viewModal"
+    ).classList.add("show");
+}
+
+
+async function deleteAppointment(id){
+
+    const appointment =
+    appointments.find(
+        a => a.id === id
+    );
+
+    if(!appointment){
+        return;
+    }
+
+    const confirmed =
+    confirm(
+        "Delete appointment for \"" +
+        appointment.client_name +
+        "\"?\n\nThis action cannot be undone."
+    );
+
+    if(!confirmed){
+        return;
+    }
+
+    const user =
+    await getCurrentUser();
+
+    if(!user){
+        return;
+    }
+
+    try{
+
+        const {
+            error
+        } =
+        await appointmentsSupabase
+        .from("appointments")
+        .delete()
+        .eq("id",id)
+        .eq("created_by",user.id);
+
+        if(error){
+            throw error;
+        }
+
+        await loadAppointments();
+
+        alert(
+            "Appointment deleted successfully."
+        );
+
+    }catch(error){
+
+        console.error(error);
+
+        alert(
+            "Could not delete appointment: " +
+            error.message
+        );
+    }
+}
+
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function(){
+
+        loadAppointments();
+
+    }
+);
+
+
+window.addEventListener(
+    "click",
+    function(event){
+
+        if(
+            event.target.classList.contains(
+                "modal"
+            )
+        ){
+
+            event.target.classList.remove(
+                "show"
+            );
+
+        }
+
+    }
+);
+
+</script>
+
+</body>
+</html>
